@@ -243,6 +243,100 @@ int Simulator::test(){
 	return 0;
 }
 
+int Simulator::newRun(int simulationSteps){
+	stepsToGo = simulationSteps;
+	currentStep = simulationSteps;
+	while(currentStep > 0){
+		currentStep--;
+
+		//print indicator showing the progress every 10000 iterations.
+		if(currentStep%10000==0){
+			printf("%f percent done.\n",(stepsToGo-currentStep)/(float)stepsToGo*100);
+		}
+
+		//which thread is executing?
+		int thread = rand() % NUM_THREADS;
+		int doAllocate = rand() % 100;
+		//allocate?
+		if(doAllocate < RATIO_ALLOC_SET){
+			/* allocation operations:
+			* 10% ('allocate' followed by 'add' to root set) and
+			* 90% ('allocate' followed by 'add' to root set and if possible ( 'reference' to the other object followed by 'delete' from root set)
+			*/
+			allocationRandomObjectAARD(thread);
+		}else{
+			/* Reference Operations
+			 * 80
+			 * */
+		}
+
+
+	}
+	return 1;
+}
+
+void Simulator::allocationRandomObjectAARD(int thread){
+	// according to Gerhard
+	/* allocation operations:
+	* 10% ('allocate' followed by 'add' to root set) and
+	* 90% ('allocate' followed by 'add' to root set and if possible ( 'reference' to the other object followed by 'delete' from root set)
+	*/
+
+	int size = (rand() % (MAX_PAYLOAD - MIN_PAYLOAD)) + MIN_PAYLOAD;
+	int outGoingRefsMax = (rand() % MAX_POINTERS) + 1;
+	int rootsetSize = memManager->getRootsetSize(thread);
+	Object* newObject;
+
+	/* class id is generated randomly, however, it will be changed later on
+	 */
+	int classID = rand()%100;
+	newObject = memManager->allocateObject(size, thread, outGoingRefsMax, currentStep, classID);
+	memManager->addObjectToRootset(newObject, thread);
+	log->logAllocation(thread, newObject->getID(), size, outGoingRefsMax, classID);
+	log->addToRoot(thread, newObject->getID());
+
+	int doReference = rand()%100;
+
+	if(doReference>10){
+		// to reference operation, rootset must contain object(s)
+		if(rootsetSize){
+
+			int rnd, rootSlotNumber;
+			rootSlotNumber = rand() % rootsetSize;
+			memManager->setupObjects();
+			int createRoot = 1; // that means there exists at the root set;
+
+			Object* child;
+			Object* parent;
+
+			child = memManager->getRoot(thread, rootSlotNumber);
+			// how here find an object randomly from the tree
+			while(child){
+				if(child->visited == 1){
+					// this means that I might fall into a loop
+					return;
+				}else{
+					child->visited = 1;
+				}
+				parent = child;
+				createRoot++;
+				rnd = rand() % parent->getPointersMax();
+				child = parent->getReferenceTo(rnd);
+			}
+
+			// do reference operation; just set pointer parent to child
+			memManager->setPointer(parent,rnd, newObject);
+			log->logRefOperation(thread,parent->getID(),rnd, newObject->getID());
+
+			// delete the pointer of the newObject from the root set;
+			// newObject was actually added to the end of the rooset, so it can be deleted from the last
+			memManager->deleteEndFromRootset(thread);
+			log->deletefromRoot(thread, newObject->getID());
+		}
+	}
+
+}
+
 Simulator::~Simulator() {
 }
 
