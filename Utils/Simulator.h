@@ -17,12 +17,15 @@ public:
 	Simulator(char* tracepath);
 	virtual ~Simulator();
 	int run(int simulationSteps);
+	// modified method of run()
+	int newRun(int simulationSteps);
 	int test();
 private:
 	int currentStep;
 	int stepsToGo;
 	MemoryManager* memManager;
 	void allocateRandomObject(int thread);
+	void allocationRandomObjectAARD(int thread);
 	void referenceOperation(int thread);
 	int getPartnerThread(int thread);
 	Logger* log;
