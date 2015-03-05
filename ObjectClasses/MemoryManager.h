@@ -44,7 +44,7 @@ public:
 	void addObjectToRootset(Object* newObject, int threadNumber);
 	void deleteEndFromRootset(int threadNumber);
 	void deleteFromRootset(int threadNumber, int rootSlotNumber);
-
+	bool isObjectInRoot(int thread, Object* obj);
 private:
 	int getListSlot();
 	int nextId;
