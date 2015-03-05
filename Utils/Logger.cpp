@@ -100,7 +100,7 @@ void Logger::logRefOperation(int thread, int parentID, int parentSlot, int child
 //			parentSlot,
 //			childID);
 	//fflush(stdout);
-	fprintf(trace,"r T%d P%d #%d O%d\n",
+	fprintf(trace,"w T%d P%d #%d O%d\n",
 			thread,
 			parentID,
 			parentSlot,

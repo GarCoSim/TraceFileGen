@@ -23,17 +23,18 @@ namespace traceGen {
 MemoryManager::MemoryManager() {
 
 	rootset.resize(NUM_THREADS);
-
-	/* since root set size can be changed dynamically
-
-	int i;
-	//init all rootsets
-	for(i = 0; i < NUM_THREADS ; i++){
-		rootset.at(i).resize(ROOTSET_SIZE);
-	}
-	objectList.resize(NUM_THREADS*ROOTSET_SIZE);
-	*/
 	nextId = 1;
+	/* In old version, root set size was fixed that requires the following initializations */
+	/* In new version, root set size can be changed dynamically */
+	if(VERSION == 0){
+		int i;
+		//init all rootsets
+		for(i = 0; i < NUM_THREADS ; i++){
+			rootset.at(i).resize(ROOTSET_SIZE);
+		}
+		objectList.resize(NUM_THREADS*ROOTSET_SIZE);
+	}
+
 }
 
 int MemoryManager::setRootPointer(int threadNumber, int rootsetNumber, Object* newObject){

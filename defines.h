@@ -38,4 +38,7 @@
 /*The age of a thread when it becomes immortal (in Trace File Lines)*/
 #define ROOT_IMMORTALITY_AGE 1000000
 
+/* A parameter used to run the older version (version == 0) and the new version (version == 1)*/
+#define VERSION 1
+
 #endif
