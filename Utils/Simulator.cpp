@@ -149,9 +149,6 @@ void Simulator::referenceOperation(int thread){
 		targetThread = thread;
 	}
 
-
-
-
 	int rnd, rnd2;
 	int sloNumber;//rand() % parent->getPointersMax();
 
@@ -243,7 +240,7 @@ int Simulator::test(){
 	return 0;
 }
 
-int Simulator::newRun(int simulationSteps){
+int Simulator::runTraceFileGenerator(int simulationSteps){
 	stepsToGo = simulationSteps;
 	currentStep = simulationSteps;
 	while(currentStep > 0){
@@ -265,11 +262,24 @@ int Simulator::newRun(int simulationSteps){
 			*/
 			allocationRandomObjectAARD(thread);
 		}else{
-			/* Reference Operations
-			 * 80
+			/* Reference Operations:
+			 * add reference to the root set
+			 * set reference to object
+			 * set reference to class
+			 * delete reference from the root set
 			 * */
+			int doreference = rand() % 100;
+			if(doreference < 50){
+				/*1. add reference of an existing object to the root set of either the same thread or other thread */
+				addReferenceToRootset(thread);
+			}else if((50 < doreference) && (doreference < 60)){
+				/*2. set reference of an existing object to another existing object of either the same thread or other thread */
+				setReferenceToObject(thread);
+			}else if((60 < doreference) && (doreference< 70)){
+				/*3. delete reference of an object from the root set */
+				deleteReferenceFromRootset(thread);
+			}
 		}
-
 
 	}
 	return 1;
@@ -335,6 +345,144 @@ void Simulator::allocationRandomObjectAARD(int thread){
 		}
 	}
 
+}
+
+void Simulator::setReferenceToObject(int thread){
+	int targetThread;
+	int rootSetSize = memManager->getRootsetSize(thread);
+	int rootSlotNumber;
+	if(rootSetSize){
+		rootSlotNumber = rand() % (rootSetSize);
+	}else{
+		//printf("No object created for this threadNumber\n");
+		return;
+	}
+
+	// most reference operations will be performed within the thread.
+	// escaping object are less likely;
+	int shouldEscape = rand() % 100;
+	if(shouldEscape < ESCAPE_PROBABILITY){
+		/*an escape will happen. Now the decision is whether
+		*to the partner, or to a random thread*/
+		int partner = rand()%100;
+		if(partner < ESPACE_TO_PARTNER){
+			targetThread = getPartnerThread(thread);
+		}else{
+			targetThread = rand() % NUM_THREADS;
+		}
+	}else{
+		// don't escape.
+		targetThread = thread;
+	}
+
+	Object* temp;
+	Object* parent = memManager->getRoot(thread, rootSlotNumber);
+
+	int rnd, rnd2;
+	int counter = rootSetSize;
+	//find source
+	while(!parent){
+
+		 rootSlotNumber = rand() % (rootSetSize);
+		 parent = memManager->getRoot(thread, rootSlotNumber);
+
+		 counter--;
+		 if(counter < 0 && !parent){
+			 //no objects created yet
+			 return;
+		 }
+	}
+	//printf(">> Parent Id:%d\n", parent->getObjectID());
+
+	temp = parent;
+	while(temp){
+		parent = temp;
+		rnd = rand() % parent->getPointersMax();
+		temp = parent->getReferenceTo(rnd);
+
+		//if I would like to stop, I stop
+		rnd2 = rand() % 100;
+		if(rnd2 < 30){
+			break;
+		}
+	}
+
+	//pick target from random thread
+
+	int childRootSetSize = memManager->getRootsetSize(targetThread);
+	int slotNumber;
+	if(childRootSetSize){
+		slotNumber = rand() % (childRootSetSize);
+	}else{
+		//printf("No object created for the targetThread\n");
+		return;
+	}
+
+	Object* child = memManager->getRoot(targetThread, slotNumber);
+	counter = childRootSetSize;
+
+	while(!child){
+		slotNumber = rand() % (childRootSetSize);
+		child = memManager->getRoot(targetThread, slotNumber);
+
+		counter--;
+		if(counter < 0 && !child){
+			 //no objects created yet
+			return;
+		}
+	}
+	temp = child;
+	while(temp){
+		child = temp;
+		rnd = rand() % child->getPointersMax();
+		temp = child->getReferenceTo(rnd);
+		rnd = rand() % 100;
+		if(rnd < 30){
+			break;
+		}
+	}
+
+	// create the reference picked
+	if(parent != child){
+		slotNumber = rand() % parent->getPointersMax();
+		memManager->setPointer(parent,slotNumber,child);
+		log->logRefOperation(thread,parent->getID(),slotNumber,child->getID());
+	}
+}
+
+void Simulator::addReferenceToRootset(int thread){
+
+	int targetThread;
+	int rootSetSize = memManager->getRootsetSize(thread);
+	int rootSlotNumber;
+	if(rootSetSize){
+		rootSlotNumber = rand() % (rootSetSize);
+	}else{
+		//printf("No object created for this threadNumber\n");
+		return;
+	}
+	/******************* working here ***********************/
+
+}
+
+
+void Simulator::deleteReferenceFromRootset(int thread){
+	int rootSetSize = memManager->getRootsetSize(thread);
+	int rootSlotNumber;
+
+	if(rootSetSize){
+		rootSlotNumber = rand() % (rootSetSize);
+	}else{
+		//printf("No object created for this threadNumber\n");
+		return;
+	}
+	Object* obj = memManager->getRoot(thread, rootSlotNumber);
+	memManager->deleteFromRootset(thread, rootSlotNumber);
+	log->deletefromRoot(thread, obj->getID());
+}
+
+void Simulator::setReferenceToClass(int thread){
+	// to be implemented
 }
 
 Simulator::~Simulator() {
