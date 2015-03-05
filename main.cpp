@@ -31,10 +31,10 @@ int main(int argc, char *argv[]) {
 
 	Simulator* sim = new Simulator(filename);
 	if(VERSION == 0){
-		printf("I am old version running \n");
+		//printf("I am old version running \n");
 		sim->run(iterations);
 	}else{
-		printf("I am new version running \n");
+		//printf("I am new version running \n");
 		sim->runTraceFileGenerator(iterations);
 	}
 	//sim->test();
