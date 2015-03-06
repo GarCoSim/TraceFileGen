@@ -38,4 +38,19 @@
 /*The age of a thread when it becomes immortal (in Trace File Lines)*/
 #define ROOT_IMMORTALITY_AGE 1000000
 
+/* A parameter used to run the older version (version == 0) and the new version (version == 1)*/
+#define VERSION 1
+
+/* The ratio of how often the sequence of operations (a + w - ) are performed in comparison to the
+ * sequence of operations (a +) in (%)
+ * a: allocate
+ * +: add to the root set
+ * w: reference operation
+ * -: delete from root set
+ * */
+#define RATIO_ALLOCATION 70
+
+/* The ratio of how often allocation ( (a+) & (a + w - ) ) are performed in comparison to reference operations w, +, -  in (%) */
+#define ALLOCATION 20
+
 #endif

@@ -10,16 +10,19 @@
 
 #include "../defines.h"
 #include <vector>
-
+#include <iostream>
 using std::vector;
 namespace traceGen {
 
 class Object {
 public:
 	Object(int id, int payloadSize, int maxPointers, int dateOfCreation);
+	//constructor overloading with a new parameter classID
+	Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId);
 	virtual ~Object();
 
 	int 	getID();
+	int		getClassId();
 	int 	getPayloadSize();
 	int	 	getPointerCount();
 	int 	getPointersMax();
@@ -28,6 +31,7 @@ public:
 	int 	visited;
 	int 	creationDate;
 private:
+	/* object it */
 	int 	myId;
 
 	/*The actual object I am storing information about
@@ -41,6 +45,8 @@ private:
 	/*the list of objects I am pointing at*/
 	vector<Object*> pointers;
 
+	/* class id */
+	int myClassId;
 
 };
 

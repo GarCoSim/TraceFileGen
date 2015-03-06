@@ -17,14 +17,24 @@ public:
 	Simulator(char* tracepath);
 	virtual ~Simulator();
 	int run(int simulationSteps);
+	/* runTracetFileGenerator() is a modified method of run() */
+	int runTraceFileGenerator(int simulationSteps);
 	int test();
 private:
 	int currentStep;
 	int stepsToGo;
 	MemoryManager* memManager;
 	void allocateRandomObject(int thread);
+	void allocationRandomObjectAARD(int thread);
 	void referenceOperation(int thread);
 	int getPartnerThread(int thread);
+
+	/* possible reference operations */
+	void setReferenceToObject(int thread); // 'w'
+	void addReferenceToRootset(int thread); // '+'
+	void deleteReferenceFromRootset(int thread); // '-'
+	void setReferenceToClass(int thread); // 'c'
+
 	Logger* log;
 };
 
