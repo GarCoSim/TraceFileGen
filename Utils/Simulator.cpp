@@ -256,7 +256,7 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 		int doAllocate = rand() % 100;
 		//allocate?
 
-		if(doAllocate < RATIO_ALLOC_SET){
+		if(doAllocate < ALLOCATION){
 			/* allocation operations:
 			* 10% ('allocate' followed by 'add' to root set) and
 			* 90% ('allocate' followed by 'add' to root set and if possible ( 'reference' to the other object followed by 'delete' from root set)
@@ -269,21 +269,23 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 			 * set reference to class
 			 * delete reference from the root set
 			 * */
-			int doreference = rand() % 100;
-			if(doreference < 50){
-				/*1. add reference of an existing object to the root set of either the same thread or other thread */
+			int doReference = rand() % 100;
+			if(doReference < 90){
+				/*1. add the pointer of an existing object to the root set of either the same thread or other thread */
 				addReferenceToRootset(thread);
-			}else if((50 < doreference) && (doreference < 60)){
-				/*2. set reference of an existing object to another existing object of either the same thread or other thread */
+			}else if((90 < doReference) && (doReference < 96)){
+				/*2. set the pointer of an existing object to another existing object of either the same thread or other thread */
 				setReferenceToObject(thread);
-			}else if((60 < doreference) && (doreference< 70)){
-				/*3. delete reference of an object from the root set */
-				deleteReferenceFromRootset(thread);
 			}else{
-				/*4. set reference to class */
-				/* to be implemented later */
-				//setReferenceToClass(thread);
+				/*3. delete the pointer of an existing object from the root set */
+				deleteReferenceFromRootset(thread);
 			}
+			/*
+			else{
+				//4. set reference to class
+				// to be implemented later
+				//setReferenceToClass(thread);
+			}*/
 		}
 
 	}
@@ -312,7 +314,7 @@ void Simulator::allocationRandomObjectAARD(int thread){
 
 	int doReference = rand()%100;
 
-	if(doReference>10){
+	if(doReference < RATIO_ALLOCATION){
 		// to reference operation, rootset must contain object(s)
 		if(rootsetSize){
 
