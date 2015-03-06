@@ -235,7 +235,7 @@ void MemoryManager::addObjectToRootset(Object* newObject, int threadNumber){
 
 bool MemoryManager::isObjectInRoot(int thread, Object* obj){
 	int i;
-	for(i = 0 ; i < rootset[thread].size();  i++){
+	for(i = 0 ; i <(int) rootset[thread].size();  i++){
 		if(rootset[thread].at(i) && obj == rootset[thread].at(i)){
 			return true;
 		}
