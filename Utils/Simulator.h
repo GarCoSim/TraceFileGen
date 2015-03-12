@@ -34,6 +34,7 @@ private:
 	void addReferenceToRootset(int thread); // '+'
 	void deleteReferenceFromRootset(int thread); // '-'
 	void setReferenceToClass(int thread); // 'c'
+	void readObject(int thread); // 'r'
 
 	Logger* log;
 };
