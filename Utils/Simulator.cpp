@@ -268,21 +268,25 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 			 * set reference to object
 			 * set reference to class
 			 * delete reference from the root set
+			 * read object
 			 * */
 			int doReference = rand() % 100;
-			if(doReference < 90){
+			if(doReference < 80){
 				/*1. add the pointer of an existing object to the root set of either the same thread or other thread */
 				addReferenceToRootset(thread);
-			}else if((90 < doReference) && (doReference < 96)){
+			}else if((80 < doReference) && (doReference < 86)){
 				/*2. set the pointer of an existing object to another existing object of either the same thread or other thread */
 				setReferenceToObject(thread);
-			}else{
+			}else if((86 < doReference) && (doReference < 95)){
 				/*3. delete the pointer of an existing object from the root set */
 				deleteReferenceFromRootset(thread);
 			}
-			/*
 			else{
-				//4. set reference to class
+				/*4. read object operation */
+				readObject(thread);
+			}
+			/*else{
+				//5. set reference to class
 				// to be implemented later
 				//setReferenceToClass(thread);
 			}*/
@@ -497,6 +501,40 @@ void Simulator::deleteReferenceFromRootset(int thread){
 
 void Simulator::setReferenceToClass(int thread){
 	// to be implemented later on
+}
+
+
+void Simulator::readObject(int thread){
+	int rootSetSize = memManager->getRootsetSize(thread);
+	int rootSlotNumber;
+
+	if(rootSetSize){
+		rootSlotNumber = rand() % (rootSetSize);
+	}else{
+		//printf("No object created for this threadNumber\n");
+		return;
+	}
+	memManager->setupObjects();
+
+	int rnd;
+	// find an object from the root set;
+	Object* child = memManager->getRoot(thread, rootSlotNumber);
+	Object* parent;
+
+	// find an object randomly from the tree
+	while(child){
+		if(child->visited == 1){
+			// this means that I might fall into a loop
+			return;
+		}else{
+			child->visited = 1;
+		}
+		parent = child;
+		rnd = rand() % parent->getPointersMax();
+		child = parent->getReferenceTo(rnd);
+	}
+
+	log->logReadOperation(thread, parent->getID());
 }
 
 Simulator::~Simulator() {
