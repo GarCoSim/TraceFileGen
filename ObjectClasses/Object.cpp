@@ -20,10 +20,31 @@ Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation) {
 	pointers.resize(maxPointers);
 	visited = 0;
 	creationDate = dateOfCreation;
+
+	// default classId is set to 0
+	myClassId = 0;
 }
+
+Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId) {
+
+	//prepare data structure
+	myId = id;
+	myPayoadSize = payloadSize;
+	myPointersCurrent = 0;
+	myPointersMax = maxPointers;
+	pointers.resize(maxPointers);
+	visited = 0;
+	creationDate = dateOfCreation;
+	myClassId = classId;
+}
+
 
 int Object::getID(){
 	return this->myId;
+}
+
+int Object::getClassId(){
+	return this->myClassId;
 }
 
 int Object::getPayloadSize(){
