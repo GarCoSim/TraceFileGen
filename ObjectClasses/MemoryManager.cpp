@@ -11,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <vector>
 #include "MemoryManager.h"
 //#include "../Utils/configReader.h"
 #include "Object.h"
@@ -20,24 +21,35 @@ using namespace std;
 namespace traceGen {
 
 MemoryManager::MemoryManager() {
-	int i;
-	rootset.resize(NUM_THREADS);
 
-	//init all rootsets
-	for(i = 0; i < NUM_THREADS ; i++){
-		rootset.at(i).resize(ROOTSET_SIZE);
+	rootset.resize(NUM_THREADS);
+	nextId = 1;
+	/* In old version, root set size was fixed that requires the following initializations */
+	/* In new version, root set size can be changed dynamically */
+	if(VERSION == 0){
+		int i;
+		//init all rootsets
+		for(i = 0; i < NUM_THREADS ; i++){
+			rootset.at(i).resize(ROOTSET_SIZE);
+		}
+		objectList.resize(NUM_THREADS*ROOTSET_SIZE);
 	}
 
-	objectList.resize(NUM_THREADS*ROOTSET_SIZE);
-
-	nextId = 1;
 }
 
-int MemoryManager::setRootPointer(int threadNumber, int rootsetNumber, Object* target){
+int MemoryManager::setRootPointer(int threadNumber, int rootsetNumber, Object* newObject){
 	if(rootsetNumber >= ROOTSET_SIZE || threadNumber >= NUM_THREADS){
 		return -1;
 	}
-	rootset[threadNumber][rootsetNumber] = target;
+	rootset[threadNumber][rootsetNumber] = newObject;
+	return 0;
+}
+
+int MemoryManager:: setRootPointer(int threadNumber, Object* newObject){
+	if(threadNumber >= NUM_THREADS){
+			return -1;
+		}
+	rootset[threadNumber].push_back(newObject);
 	return 0;
 }
 
@@ -81,7 +93,13 @@ int MemoryManager::allocateObject(int size, int maxPointers,
 	return id;
 }
 
+Object* MemoryManager::allocateObject(int size, int threadNumber, int maxPointers,int creationDate, int classID){
 
+	int objectID = nextId;
+	nextId++;
+	Object* newObject = new Object(objectID, size, maxPointers, creationDate, classID);
+	return newObject;
+}
 
 int MemoryManager::setPointer(Object* startObject, int pointerIndex, Object* targetObject){
 	return startObject->setPointer(pointerIndex,targetObject);
@@ -112,6 +130,14 @@ Object* MemoryManager::getRoot(int threadNumber, int rootSlotNumber){
 
 void MemoryManager::deleteRoot(int thread, int root){
 	rootset[thread][root] = NULL;
+}
+
+void MemoryManager::deleteEndFromRootset(int threadNumber){
+	int deleteIndex = rootset[threadNumber].size()-1;
+	rootset[threadNumber].erase(rootset[threadNumber].begin()+deleteIndex);
+}
+void MemoryManager::deleteFromRootset(int threadNumber, int rootSlotNumber){
+	rootset[threadNumber].erase(rootset[threadNumber].begin()+rootSlotNumber);
 }
 
 int MemoryManager::getListSlot(){
@@ -190,6 +216,31 @@ void MemoryManager::setupObjects(){
 			temp->visited = 0;
 		}
 	}
+}
+
+int MemoryManager::getRootsetSize(int threadNumber){
+	if(threadNumber<(int)rootset.size()){
+			return rootset[threadNumber].size();
+		}else{
+			return 0;
+		}
+}
+
+void MemoryManager::addObjectToRootset(Object* newObject, int threadNumber){
+	// add new object to the object list
+	objectList.push_back(newObject);
+	//add object to the root set
+	setRootPointer(threadNumber, newObject);
+}
+
+bool MemoryManager::isObjectInRoot(int thread, Object* obj){
+	int i;
+	for(i = 0 ; i <(int) rootset[thread].size();  i++){
+		if(rootset[thread].at(i) && obj == rootset[thread].at(i)){
+			return true;
+		}
+	}
+	return false;
 }
 
 MemoryManager::~MemoryManager() {

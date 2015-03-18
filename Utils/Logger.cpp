@@ -7,12 +7,16 @@
 
 #include "Logger.h"
 #include <stdlib.h>
+#include <string.h>
 
 namespace traceGen {
 
 Logger::Logger(char* tracepath) {
 	//open File to log.
 	trace = fopen(tracepath, "w");
+
+	// dot file is not used, set null as default value
+	dot = '\0';
 	//dot = fopen("gcKons.dot", "w");
 	//fprintf(dot,"digraph G {\n");
 }
@@ -35,7 +39,21 @@ void Logger::logAllocationRoot(int thread, int rootsetIndex, int id, int size, i
 }
 
 void Logger::deleteRoot(int thread,int root){
-	fprintf(trace, "- T%d R%d\n",thread,root);
+//	printf("- T%d O%d\n",
+//			thread,
+//			root);
+//	//fflush(stdout);
+	fprintf(trace, "- T%d R%d\n",
+			thread,
+			root);
+}
+
+void Logger::deletefromRoot(int thread,int id){
+//	printf("- T%d O%d\n",
+//			thread,
+//			id);
+//	//fflush(stdout);
+	fprintf(trace, "- T%d O%d\n",thread,id);
 }
 
 void Logger::logAllocation(int thread, int parent, int parentSlot, int id, int size, int refCount){
@@ -57,6 +75,23 @@ void Logger::logAllocation(int thread, int parent, int parentSlot, int id, int s
 //	fprintf(dot,"%d -> %d;\n", parent, id);
 }
 
+void Logger::logAllocation(int thread, int id, int size, int refCount, int classID){
+	//	printf("a T%d O%d S%d N%d C%d\n",
+	//			thread,
+	//			id,
+	//			size,
+	//			refCount,
+	//			classID);
+		//fflush(stdout);
+		fprintf(trace,"a T%d O%d S%d N%d C%d\n",
+				thread,
+				id,
+				size,
+				refCount,
+				classID);
+	//	fprintf(dot,"%d -> %d;\n", parent, id);
+}
+
 void Logger::logRefOperation(int thread, int parentID, int parentSlot, int childID){
 
 //	printf("r T%d P%d #%d O%d\n",
@@ -65,7 +100,7 @@ void Logger::logRefOperation(int thread, int parentID, int parentSlot, int child
 //			parentSlot,
 //			childID);
 	//fflush(stdout);
-	fprintf(trace,"r T%d P%d #%d O%d\n",
+	fprintf(trace,"w T%d P%d #%d O%d\n",
 			thread,
 			parentID,
 			parentSlot,
@@ -78,6 +113,37 @@ void Logger::logEnd(){
 	//system("dot -Tpng gcKons.dot -o gcKons.png");
 }
 
+
+void Logger::logReadOperation(int thread, int id){
+//	printf("r T%d O%d\n",
+//			thread,
+//			id);
+//	//fflush(stdout);
+	fprintf(trace, "r T%d O%d\n",
+			thread,
+			id);
+}
+
+void Logger::logRefOperationClaasToObject(int thread, int classID, int id){
+//	printf("c T%d C%d O%d\n",
+//			thread,
+//			classID,
+//			id);
+//	//fflush(stdout);
+	fprintf(trace, "c T%d C%d O%d\n",
+			thread,
+			classID,
+			id);
+}
+void Logger::addToRoot(int thread,int id){
+//	printf("+ T%d O%d\n",
+//			thread,
+//			id);
+//	//fflush(stdout);
+	fprintf(trace, "+ T%d O%d\n",
+			thread,
+			id);
+}
 Logger::~Logger() {
 }
 
