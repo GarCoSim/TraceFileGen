@@ -478,7 +478,7 @@ void Simulator::setReferenceToObject(int thread){
 	// create the reference picked
 	if(parent != child){
 		slotNumber = rand() % parent->getPointersMax();
-		memManager->setPointer(parent,slotNumber,child);
+		memManager->setPointer(parent,slotNumber,child);	
 		log->logRefOperation(thread,parent->getID(),slotNumber,child->getID());
 	}
 }
@@ -567,12 +567,20 @@ void Simulator::setReferenceToClass(int thread){
 
 	// create the reference picked
 	if(parent != child){
-		slotNumber = rand() % parent->getPointersMax();
-		memManager->setPointer(parent,slotNumber,child);
-		log->logRefOperationClaasToObject(thread, parent->getClassId(), child->getID());
+		int cassign = rand()%100;
+		if(cassign<80){
+			slotNumber = rand() % parent->getPointersMax();
+			memManager->setPointer(parent,slotNumber,child);
+			log->logRefOperation(thread,parent->getID(),slotNumber,child->getID());
+			log->logRefOperationClaasToObject(thread, parent->getClassId(), child->getID());
+		}
+		else{
+			//slotNumber = rand() % parent->getPointersMax();
+			//memManager->setPointer(parent,slotNumber,child);
+			log->logRefOperationClaasToObject(thread, parent->getClassId(), child->getID());
+		}
 	}
 }
-
 
 void Simulator::readObject(int thread){
 	int rootSetSize = memManager->getRootsetSize(thread);
