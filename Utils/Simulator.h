@@ -22,6 +22,7 @@ public:
 	int test();
 private:
 	int currentStep;
+
 	int stepsToGo;
 	MemoryManager* memManager;
 	void allocateRandomObject(int thread);
