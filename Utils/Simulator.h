@@ -39,5 +39,6 @@ private:
 	Logger* log;
 };
 
+
 } /* namespace gcKons */
 #endif /* SIMULATOR_H_ */
