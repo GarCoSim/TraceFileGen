@@ -28,9 +28,14 @@ public:
 	int 	getPointersMax();
 	Object* getReferenceTo(int pointerNumber);
 	int 	setPointer(int pointerNumber, Object* target);
+	void	setThreadID(int tid);
+	int		getThreadID();
 	int 	visited;
 	int 	creationDate;
 private:
+	/* thread id */
+	int myTid;
+
 	/* object it */
 	int 	myId;
 

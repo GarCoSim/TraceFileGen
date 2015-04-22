@@ -271,24 +271,36 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 			 * read object
 			 * */
 			int doReference = rand() % 100;
-
-			if((20 < doReference) && (doReference < 80)){
-				/*1. add the pointer of an existing object to the root set of either the same thread or other thread */
-				addReferenceToRootset(thread);
-			}else if((80 < doReference) && (doReference < 86)){
-				/*2. set the pointer of an existing object to another existing object of either the same thread or other thread */
-				setReferenceToObject(thread);
-			}else if((86 < doReference) && (doReference < 95)){
-				/*3. delete the pointer of an existing object from the root set */
-				deleteReferenceFromRootset(thread);
+			if(doReference < REFERENCE){
+				doReference = rand() % 100;
+				if(doReference<REFERENCE){
+					doReference = rand() % 100;
+					if(doReference < REFERENCE){
+						//set the pointer of an existing object to another existing object of either the same thread or other thread
+						setReferenceToObject(thread);
+						//set reference to class
+						setReferenceToClass(thread);
+					}
+					else{
+						//set the pointer of an existing object to another existing object of either the same thread or other thread
+						setReferenceToObject(thread);
+					}
+				}
+				else{
+					doReference = rand() % 100;
+					if(doReference>ROOT_DELETE_PROBABILITY){
+						//add the pointer of an existing object to the root set of either the same thread or other thread
+						addReferenceToRootset(thread);
+					}
+					else{
+						//delete the pointer of an existing object from the root set
+						deleteReferenceFromRootset(thread);
+					}
+				}
 			}
-			else if(doReference < 20){
-				/*4. read object operation */
+			else{
+				//read object operation
 				readObject(thread);
-			}
-			else {
-				//5. set reference to class
-				setReferenceToClass(thread);
 			}
 		}
 
@@ -302,7 +314,6 @@ void Simulator::allocationRandomObjectAARD(int thread){
 	* 10% ('allocate' followed by 'add' to root set) and
 	* 90% ('allocate' followed by 'add' to root set and if possible ( 'reference' to the other object followed by 'delete' from root set)
 	*/
-
 	int size = (rand() % (MAX_PAYLOAD - MIN_PAYLOAD)) + MIN_PAYLOAD;
 	int outGoingRefsMax = (rand() % MAX_POINTERS) + 1;
 	int rootsetSize = memManager->getRootsetSize(thread);
@@ -311,6 +322,7 @@ void Simulator::allocationRandomObjectAARD(int thread){
 	/* class id is generated randomly, however, it will be changed later on
 	 */
 	int classID = rand()%100;
+
 	newObject = memManager->allocateObject(size, thread, outGoingRefsMax, currentStep, classID);
 	memManager->addObjectToRootset(newObject, thread);
 	log->logAllocation(thread, newObject->getID(), size, outGoingRefsMax, classID);
@@ -582,37 +594,61 @@ void Simulator::setReferenceToClass(int thread){
 	}
 }
 
+/* Emulation of read operations in JVM
+ * An object to be read may or may not be in the given thread;
+ * Lets say (50% may)
+ * If a thread has not allocated any object then it can read an object that is allocated by other
+ *
+ */
+
 void Simulator::readObject(int thread){
+
+	bool hasRootSet = true;
 	int rootSetSize = memManager->getRootsetSize(thread);
 	int rootSlotNumber;
 
 	if(rootSetSize){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
+		hasRootSet = false;
 		//printf("No object created for this threadNumber\n");
-		return;
+		//return;
 	}
-	memManager->setupObjects();
 
-	int rnd;
-	// find an object from the root set;
-	Object* child = memManager->getRoot(thread, rootSlotNumber);
-	Object* parent;
+	if(!hasRootSet){
+		// select an random object
+		log->logReadOperation(thread, memManager->getARandomObjectID());
+	}
+	else{
+		int rnd;
+		rnd = rand()%100;
+		if(rnd < THREADRATIO)
+		{
+			memManager->setupObjects();
+			// find an object from the root set;
+			Object* child = memManager->getRoot(thread, rootSlotNumber);
+			Object* parent;
 
-	// find an object randomly from the tree
-	while(child){
-		if(child->visited == 1){
-			// this means that I might fall into a loop
-			return;
-		}else{
-			child->visited = 1;
+			// find an object randomly from the tree
+			while(child){
+				if(child->visited == 1){
+					// this means that I might fall into a loop
+					return;
+				}else{
+					child->visited = 1;
+				}
+				parent = child;
+				rnd = rand() % parent->getPointersMax();
+				child = parent->getReferenceTo(rnd);
+			}
+
+			log->logReadOperation(thread, parent->getID());
 		}
-		parent = child;
-		rnd = rand() % parent->getPointersMax();
-		child = parent->getReferenceTo(rnd);
+		else{
+			// select an random object that does not belongs to the given thread
+			log->logReadOperation(thread, memManager->getARandomObjectID(thread));
+		}
 	}
-
-	log->logReadOperation(thread, parent->getID());
 }
 
 

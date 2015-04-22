@@ -45,6 +45,8 @@ public:
 	void deleteEndFromRootset(int threadNumber);
 	void deleteFromRootset(int threadNumber, int rootSlotNumber);
 	bool isObjectInRoot(int thread, Object* obj);
+	int getARandomObjectID();
+	int getARandomObjectID(int thread);
 private:
 	int getListSlot();
 	int nextId;
