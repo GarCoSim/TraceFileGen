@@ -308,6 +308,7 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 	return 1;
 }
 
+
 void Simulator::allocationRandomObjectAARD(int thread){
 	// according to Gerhard
 	/* allocation operations:
@@ -419,6 +420,7 @@ void Simulator::addReferenceToRootset(int thread){
 	memManager->addObjectToRootset(object, targetThread);
 	log->addToRoot(targetThread, object->getID());
 }
+
 
 
 void Simulator::setReferenceToObject(int thread){
