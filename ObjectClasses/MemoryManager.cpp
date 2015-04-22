@@ -98,6 +98,8 @@ Object* MemoryManager::allocateObject(int size, int threadNumber, int maxPointer
 	int objectID = nextId;
 	nextId++;
 	Object* newObject = new Object(objectID, size, maxPointers, creationDate, classID);
+	//new
+	newObject->setThreadID(threadNumber);
 	return newObject;
 }
 
@@ -241,6 +243,37 @@ bool MemoryManager::isObjectInRoot(int thread, Object* obj){
 		}
 	}
 	return false;
+}
+
+int MemoryManager::getARandomObjectID(){
+	int rnd;
+	rnd = rand()% ((int)objectList.size());
+	return objectList[rnd]->getID();
+}
+
+int MemoryManager::getARandomObjectID(int thread){
+	int rnd;
+	rnd = rand()% ((int)objectList.size());
+	int oid, otd;
+	oid = objectList[rnd]->getID();
+	otd = objectList[rnd]->getThreadID();
+
+    /* randomly select object but never try more than the number of objects created*/
+	int i=0;
+	while(i < (int)objectList.size()){
+		if(thread != otd){
+			break;
+		}
+		else{
+			rnd = rand()% ((int)objectList.size());
+			oid = objectList[rnd]->getID();
+			otd = objectList[rnd]->getThreadID();
+			//cout<<"Here"<<endl;
+		}
+		i++;
+	}
+	//cout<<"Here"<<endl;
+	return oid;
 }
 
 MemoryManager::~MemoryManager() {

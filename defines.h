@@ -48,10 +48,17 @@
  * w: reference operation
  * -: delete from root set
  * */
+
+#define ALLOCATION 70
+/* The ratio of how often allocation ( (a+) & (a + w - ) ) are performed */
 #define RATIO_ALLOCATION 70
 
-/* The ratio of how often allocation ( (a+) & (a + w - ) ) are performed in comparison to reference operations w, +, -  in (%) */
-#define ALLOCATION 20
+
+#define REFERENCE 40
+#define CREFERENCE 90
+
+/* Ratio of operations on objects accessible by the given thread*/
+#define THREADRATIO 90
 
 
 #endif

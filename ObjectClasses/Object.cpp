@@ -23,6 +23,8 @@ Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation) {
 
 	// default classId is set to 0
 	myClassId = 0;
+	/* A thread id must be positive integer */
+	myTid = -1;
 }
 
 Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId) {
@@ -77,6 +79,14 @@ int Object::setPointer(int pointerNumber, Object* target){
 
 	pointers[pointerNumber] = target;
 	return 1;
+}
+
+
+void Object::setThreadID(int tid){
+	myTid = tid;
+}
+int	Object::getThreadID(){
+	return myTid;
 }
 
 Object::~Object() {

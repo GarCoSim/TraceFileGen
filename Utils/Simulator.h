@@ -22,6 +22,7 @@ public:
 	int test();
 private:
 	int currentStep;
+
 	int stepsToGo;
 	MemoryManager* memManager;
 	void allocateRandomObject(int thread);
@@ -38,6 +39,7 @@ private:
 
 	Logger* log;
 };
+
 
 } /* namespace gcKons */
 #endif /* SIMULATOR_H_ */
