@@ -12,6 +12,18 @@ using namespace std;
 
 FILE* gDetLog;
 
+
+int NUM_THREADS ;
+int clazz  ;
+int ROOTSET_SIZE ;      
+int longevity ; 
+int escape ;    
+int RATIO_ALLOC_SET; 
+int readaccess ;
+int storeaccess ;
+int ROOT_DELETE_PROBABILITY; 	   
+int ratiostaticfield;	
+
 /*
 int main(int argc, char *argv[]) {
 	//default trace file name (and path).
@@ -47,10 +59,9 @@ int main(int argc, char *argv[]) {
 
 int setArgs(int argc, char *argv[], const char *option, const char *shortOption) {
 	int i;
-
 	for (i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], option) || !strcmp(argv[i], shortOption)) {
-			if (!strcmp(option, "--iteration") || !strcmp(shortOption, "-i")) {
+			if (!strcmp(option, "--iterations") || !strcmp(shortOption, "-i")) {
 				return atoi(argv[i + 1]);
 			}
 			else if (!strcmp(option, "--thread") || !strcmp(shortOption, "-t")) {
@@ -80,10 +91,10 @@ int setArgs(int argc, char *argv[], const char *option, const char *shortOption)
 			else if (!strcmp(option, "--read") || !strcmp(shortOption, "-r")) {
 				return atoi(argv[i + 1]);
 			}
-			else if (!strcmp(option, "--objectref") || !strcmp(shortOption, "-or")) {
+			else if (!strcmp(option, "--static") || !strcmp(shortOption, "-s")) {
 				return atoi(argv[i + 1]);
 			}
-			else if (!strcmp(option, "--classref") || !strcmp(shortOption, "-cr")) {
+			else if (!strcmp(option, "--delrootset") || !strcmp(shortOption, "-d")) {
 				return atoi(argv[i + 1]);
 			}
 			else{
@@ -97,11 +108,12 @@ int setArgs(int argc, char *argv[], const char *option, const char *shortOption)
 }
 
 int main(int argc, char *argv[]){
+	
 	if(argc < 2) {
 		fprintf(stderr, "Usage: TraceFileGenerator traceFile [OPTIONS]\n" \
 						"Options:\n" \
 						"  The name of trace file (default: traceFile.trace)\n" \
-						"  --iteration x, -i x       uses x number as the number of iterations (default: 1000000)\n" \
+						"  --iteration x, -i x       uses x number as the number of iterations (default: 100)\n" \
 						"  --thread x, -t x      	 uses x number as the number of threads (default: 10)\n" \
 						"  --clazz x, -c x      	 uses x number as the number of classes (default: 300)\n" \
 						"  --rootset x, -rs x      	 uses x number as the size of maximum rootset (default: 50)\n" \
@@ -109,59 +121,74 @@ int main(int argc, char *argv[]){
 						"  --longevity x, -l x       uses x number as the maximum of operations before an object dead (default: 10000)\n" \
 						"  --escape x, -e x          uses x probability as the an object to be escaped (default: 20)\n" \
 						"  --allocation x, -a x      uses x percent as the allocation (default: 2)\n" \
-						"  --store x, -s x      	 uses x percent as the store (default: 10)\n" \
-						"  --read x, -r x      		 uses x percent as the read (default: 88)\n" \
-						"  --objectref x, -or x      uses x percent as the obj->obj reference (default: 90)\n" \
-						"  --classref x, -cr x       uses x percent as the cls->obj reference (default: 10)\n" \
+						"  --storeaccess x, -s x      	 uses x percent as the store (default: 10)\n" \
+						"  --readaccess x, -r x      		 uses x percent as the read (default: 88)\n" \
+						"  --deleteroot x, -r x    uses x percent as the rootdelete (default: 10)\n" \
+						"  --static x, -or x      uses x percent as the ratio of static field oepration (default: 30)\n" \
 						);
 		exit(1);
 	}
 
-		fprintf(stderr, "TraceFileGenerator v%.2f\n\n", VERSION);
+		fprintf(stderr, "TraceFileGenerator v-%d\n\n", VERSION);
 
 		gDetLog = fopen("detailed.log","w+");
 
 		char *filename  = argv[1];
-		int iteration = setArgs(argc, argv, "--iteration",  "-i");
-		int thread      = setArgs(argc, argv, "--thread",  "-t");
-		int clazz       = setArgs(argc, argv, "--class",  "-c");
-		int rootset     = setArgs(argc, argv, "--rootset",  "-rs");
-		int payload     = setArgs(argc, argv, "--payload",  "-p");
-		int longevity  = setArgs(argc, argv, "--longevity",  "-l");
-		int escape      = setArgs(argc, argv, "--escape",  "-e");
-		int allocation  = setArgs(argc, argv, "--allocation",  "-a");
-		int read  		= setArgs(argc, argv, "--read",  "-r");
-		int store  	    = setArgs(argc, argv, "--store",  "-s");
-		int objectref  	= setArgs(argc, argv, "--objectref",  "-or");
-		int clazzref  	= setArgs(argc, argv, "--classref",  "-cr");
+		char *clsfilename = argv[2];
 
-		iteration = iteration <0 ? 1000000 : iteration;
-		thread   = thread <0 ? 10 : thread;
+		 int iterations = setArgs(argc, argv, "--iteration",  "-i");
+		 NUM_THREADS      = setArgs(argc, argv, "--thread",  "-t");
+		 clazz       = setArgs(argc, argv, "--class",  "-c");
+		 ROOTSET_SIZE     = setArgs(argc, argv, "--rootset",  "-rs");
+		 longevity  = setArgs(argc, argv, "--longevity",  "-l");
+		 escape      = setArgs(argc, argv, "--escape",  "-e");
+		 RATIO_ALLOC_SET = setArgs(argc, argv, "--allocation",  "-a");
+		 readaccess  		= setArgs(argc, argv, "--read",  "-r");
+		 storeaccess  	    = setArgs(argc, argv, "--store",  "-s");
+		 ratiostaticfield = setArgs(argc, argv, "--static",  "-s");
+		 ROOT_DELETE_PROBABILITY 	= setArgs(argc, argv, "--deleteaccess",  "-d");
+
+		iterations = iterations <0 ? 100 : iterations;
+		NUM_THREADS   = NUM_THREADS <0 ? 10 : NUM_THREADS;
 		clazz 	 = clazz <0 ?  300 : clazz;
-		rootset  = rootset <0 ? 50 : rootset;
-		payload  = payload <0 ? 100 : payload;
+		ROOTSET_SIZE  = ROOTSET_SIZE <0 ? 50 : ROOTSET_SIZE;
 		longevity= longevity <0 ? 10000 : longevity;
 		escape   = escape <0 ? 20 : escape;
-		allocation = allocation <0 ? 2 : allocation;
-		read = read < 0 ? 80 : read;
-		store = store <0 ? 10 : store;
-		objectref = objectref <0 ? 90 : objectref;
-		clazzref = clazzref <0 ? 10 : clazzref;
+		RATIO_ALLOC_SET = RATIO_ALLOC_SET <0 ? 2 : RATIO_ALLOC_SET;
+		readaccess = readaccess < 0 ? 80 : readaccess;
+		storeaccess = storeaccess <0 ? 10 : storeaccess;
+		ratiostaticfield = ratiostaticfield <0 ? 30 : ratiostaticfield;
+		ROOT_DELETE_PROBABILITY = ROOT_DELETE_PROBABILITY <0 ? 10 : ROOT_DELETE_PROBABILITY;
 
 		fprintf(gDetLog, "TraceFileGenerator v-%.2f\n", VERSION);
-		fprintf(gDetLog, "Number of iteration: %d\n", iteration);
-		fprintf(gDetLog, "Number of threads: %d\n", thread);
+		fprintf(gDetLog, "Number of iteration: %d\n", iterations);
+		fprintf(gDetLog, "Number of threads: %d\n", NUM_THREADS);
 		fprintf(gDetLog, "Number of classes: %d\n", clazz);
-		fprintf(gDetLog, "Maximum rootset size: %d\n", rootset);
-		fprintf(gDetLog, "Maximum payload size: %d\n", payload);
+		fprintf(gDetLog, "Maximum rootset size: %d\n", ROOTSET_SIZE);
+		fprintf(gDetLog, "Maximum payload size: %d\n", MAX_PAYLOAD);
+		fprintf(gDetLog, "Maximum reference slot in object&class: %d\n",  MAX_POINTERS);
 		fprintf(gDetLog, "Object's longevity: %d\n", longevity);
 		fprintf(gDetLog, "Probability of escaped object: %d\n", escape);
-		fprintf(gDetLog, "Ratio of allocation: %d\n", allocation);
-		fprintf(gDetLog, "Ration of read access: %d\n", read);
-		fprintf(gDetLog, "Ratio of store access: %d\n", store);
-		fprintf(gDetLog, "Ratio of object->object reference in store access: %d\n", objectref);
-		fprintf(gDetLog, "Ratio of class->object reference in store access: %d\n", clazzref);
-		
+		fprintf(gDetLog, "Ratio of allocation: %d\n", RATIO_ALLOC_SET);
+		fprintf(gDetLog, "Ration of read access: %d\n", readaccess);
+		fprintf(gDetLog, "Ratio of store access: %d\n", storeaccess);
+
+		fprintf(gDetLog, "Ratio of static field access: %d\n", ratiostaticfield);
+		fprintf(gDetLog, "Ratio of rootsetdeletion: %d\n", ROOT_DELETE_PROBABILITY);
+
+		Simulator* sim = new Simulator(filename);
+		if(VERSION == 0){
+			//printf("I am old version running \n");
+			sim->run(iterations);
+		}else{
+			//printf("I am new version running \n");
+
+			sim->initializeClassTable(clsfilename);
+			//sim->runTraceFileGenerator(iterations);
+		}
+
+
+
 		fclose(gDetLog);
 		
 	return 0;

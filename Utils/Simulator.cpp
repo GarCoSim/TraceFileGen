@@ -4,14 +4,41 @@
  *  Created on: 2013-08-14
  *      Author: kons
  */
-
+#include <iostream>
+#include <sstream>
 #include "Simulator.h"
 #include "../defines.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include <time.h>
 
 using namespace std;
+
+
+FILE* classFilePointer;
+
+extern int NUM_THREADS ;
+extern int ROOTSET_SIZE ; 
+extern int RATIO_ALLOC_SET ;
+extern int readaccess ;
+extern int storeaccess ;
+
+extern int ratiostaticfield;
+extern int ROOT_DELETE_PROBABILITY;
+
+extern int clazz ;
+
+typedef struct Tabe{
+	int id;
+	int nField;
+	int nStatic;
+	int acc;
+	char className[20];
+}classTable;
+
+classTable *traceClassTable;
 
 namespace traceGen {
 
@@ -240,9 +267,43 @@ int Simulator::test(){
 	return 0;
 }
 
+void Simulator::initializeClassTable(char *classfilename){
+	
+	traceClassTable = new classTable[clazz];
+	
+	classFilePointer = fopen(classfilename,"w+");
+
+	for(int i=0; i<clazz; i++){
+		
+		traceClassTable[i].id = i+1;
+		int f = rand()%100;
+		int s = rand()%10;
+		while(s > f){
+			f = rand()%100;
+			s = rand()%10;
+		}
+		traceClassTable[i].nField = f;
+		traceClassTable[i].nStatic = s;
+		
+		stringstream ss;
+		ss << i;
+		string str = "kdm"+ss.str();
+		strcpy(traceClassTable[i].className, str.c_str());
+		fprintf(classFilePointer, "C%d I%d #%d %s\n", traceClassTable[i].id, traceClassTable[i].nField, traceClassTable[i].nStatic, traceClassTable[i].className);
+
+	}
+}
+
 int Simulator::runTraceFileGenerator(int simulationSteps){
+
+
+	
+
 	stepsToGo = simulationSteps;
 	currentStep = simulationSteps;
+
+
+
 	while(currentStep > 0){
 		currentStep--;
 
@@ -253,23 +314,88 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 
 		//which thread is executing?
 		int thread = rand() % NUM_THREADS;
-		int doAllocate = rand() % 100;
-		//allocate?
+		
+		int i = RATIO_ALLOC_SET;
+		int j = i + storeaccess ;
+		int k = j + readaccess;
+		int l = k + ROOT_DELETE_PROBABILITY;
+		int x = rand()%100;
 
-		if(doAllocate < ALLOCATION){
-			/* allocation operations:
-			* 10% ('allocate' followed by 'add' to root set) and
-			* 90% ('allocate' followed by 'add' to root set and if possible ( 'reference' to the other object followed by 'delete' from root set)
-			*/
+		if( (0 <= x)&&(x <= i) ){
+			// allocation operations:
+			allocationRandomObjectAARD(thread);
+		}
+		else if( ( i < x) && (x <= j) ){
+			// store operations
+			int doStore = rand() % 100;
+			int storeInObject = rand()%100;
+			if(doStore <  PRIMITIVE_PROBABILITY ){
+				if(storeInObject > ratiostaticfield){
+					//storeObjectFiledWithPrimitive(thread);
+				}
+				else{
+					//storeClassFiledWithPrimitive(thread);
+				}
+			}
+			else{
+				if(storeInObject > ratiostaticfield){
+					setReferenceToObject(thread);
+				}
+				else{
+					setReferenceToClass(thread);
+				}
+			}
+		}
+		else if( ( j< x) && ( x <= k) ){
+			// read operations
+			int doRead = rand() % 100;
+			int readFromObject = rand()%100;
+			if(doRead< PRIMITIVE_PROBABILITY ){
+				if(readFromObject > ratiostaticfield){
+					//readObjectFiledWithPrimitive(thread);
+				}
+				else{
+					//readClassFiledWithPrimitive(thread);
+				}
+			}
+			else{
+				if(readFromObject > ratiostaticfield){
+					//readReferenceToObject(thread);
+				}
+				else{
+					//readReferenceToClass(thread);
+				}
+			}
+		}
+		else if( ( k< x) && ( x <= l) ){
+			int addDel = rand() % 100;
+			if(addDel>50){
+				//add the pointer of an existing object to the root set of either the same thread or other thread
+				//
+				addReferenceToRootset(thread);
+			}
+			else{
+				//delete the pointer of an existing object from the root set
+				//
+				deleteReferenceFromRootset(thread);
+			}
+		}
+
+	/*
+		if(doAllocate < allocation){
+			// allocation operations:
+			// 10% ('allocate' followed by 'add' to root set) and
+			// 90% ('allocate' followed by 'add' to root set and if possible ( 'reference' to the other object followed by 'delete' from root set)
+			//
 			allocationRandomObjectAARD(thread);
 		}else{
-			/* Reference Operations:
-			 * add reference to the root set
-			 * set reference to object
-			 * set reference to class
-			 * delete reference from the root set
-			 * read object
-			 * */
+			// Reference Operations:
+			// add reference to the root set
+			// set reference to object
+			// set reference to class
+			// delete reference from the root set
+			// read object
+			// 
 			int doReference = rand() % 100;
 			if(doReference < REFERENCE){
 				doReference = rand() % 100;
@@ -302,9 +428,13 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 				//read object operation
 				readObject(thread);
 			}
+
 		}
+	*/
 
 	}
+	delete [] traceClassTable;
+
 	return 1;
 }
 
