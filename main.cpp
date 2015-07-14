@@ -182,9 +182,8 @@ int main(int argc, char *argv[]){
 			sim->run(iterations);
 		}else{
 			//printf("I am new version running \n");
-
 			sim->initializeClassTable(clsfilename);
-			//sim->runTraceFileGenerator(iterations);
+			sim->runTraceFileGenerator(iterations);
 		}
 
 

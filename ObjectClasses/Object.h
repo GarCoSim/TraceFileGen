@@ -19,6 +19,8 @@ public:
 	Object(int id, int payloadSize, int maxPointers, int dateOfCreation);
 	//constructor overloading with a new parameter classID
 	Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId);
+
+	Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId, int primField);
 	virtual ~Object();
 
 	int 	getID();
@@ -30,8 +32,11 @@ public:
 	int 	setPointer(int pointerNumber, Object* target);
 	void	setThreadID(int tid);
 	int		getThreadID();
+	int 	getFieldOffset(int index,  int fieldType);
+	int 	getFieldSize(int index);
 	int 	visited;
 	int 	creationDate;
+	int     vecPrim[3] ;
 private:
 	/* thread id */
 	int myTid;
@@ -51,6 +56,10 @@ private:
 	vector<Object*> pointers;
 
 	/* class id */
+	int nPrimitives;
+
+
+
 	int myClassId;
 
 };

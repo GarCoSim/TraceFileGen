@@ -24,6 +24,7 @@ extern int ROOTSET_SIZE ;
 extern int RATIO_ALLOC_SET ;
 extern int readaccess ;
 extern int storeaccess ;
+extern int clazz;
 
 extern int ratiostaticfield;
 extern int ROOT_DELETE_PROBABILITY;
@@ -284,6 +285,7 @@ void Simulator::initializeClassTable(char *classfilename){
 		}
 		traceClassTable[i].nField = f;
 		traceClassTable[i].nStatic = s;
+		traceClassTable[i].acc = 0;
 		
 		stringstream ss;
 		ss << i;
@@ -297,12 +299,8 @@ void Simulator::initializeClassTable(char *classfilename){
 int Simulator::runTraceFileGenerator(int simulationSteps){
 
 
-	
-
 	stepsToGo = simulationSteps;
 	currentStep = simulationSteps;
-
-
 
 	while(currentStep > 0){
 		currentStep--;
@@ -322,7 +320,7 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 		int x = rand()%100;
 
 		if( (0 <= x)&&(x <= i) ){
-			// allocation operations:
+			printf( "Allocation....\n");
 			allocationRandomObjectAARD(thread);
 		}
 		else if( ( i < x) && (x <= j) ){
@@ -446,18 +444,37 @@ void Simulator::allocationRandomObjectAARD(int thread){
 	* 90% ('allocate' followed by 'add' to root set and if possible ( 'reference' to the other object followed by 'delete' from root set)
 	*/
 	int size = (rand() % (MAX_PAYLOAD - MIN_PAYLOAD)) + MIN_PAYLOAD;
+	
 	int outGoingRefsMax = (rand() % MAX_POINTERS) + 1;
+	int primitiveField = (rand() % MAX_PRIMITIVES) +1;
+
 	int rootsetSize = memManager->getRootsetSize(thread);
 	Object* newObject;
 
 	/* class id is generated randomly, however, it will be changed later on
 	 */
-	int classID = rand()%100;
 
-	newObject = memManager->allocateObject(size, thread, outGoingRefsMax, currentStep, classID);
+	//int classID = rand()%100;
+	//3.0
+	int classID;
+	int clsIndex = rand()%clazz;
+	// select class which has been acceessed (hit) less
+	while(1){
+		if( traceClassTable[clsIndex].acc < (int)(MAXACCESS/2) ){
+			classID = clsIndex+1;
+			break;
+		}
+		clsIndex = rand()%clazz;
+	}
+
+
+	//newObject = memManager->allocateObject(size, thread, outGoingRefsMax, currentStep, classID);
+	newObject = memManager->allocateObject(size, thread, outGoingRefsMax, currentStep, classID, primitiveField); // 3.0
 	memManager->addObjectToRootset(newObject, thread);
-	log->logAllocation(thread, newObject->getID(), size, outGoingRefsMax, classID);
+	log->logAllocation(thread, newObject->getID(), newObject->getPayloadSize(), outGoingRefsMax, classID);
 	log->addToRoot(thread, newObject->getID());
+
+
 
 	int doReference = rand()%100;
 
@@ -490,6 +507,9 @@ void Simulator::allocationRandomObjectAARD(int thread){
 
 			// do reference operation; just set pointer parent to child
 			memManager->setPointer(parent,rnd, newObject);
+
+			//int offset = 16 + primitiveField*8
+
 			log->logRefOperation(thread,parent->getID(),rnd, newObject->getID());
 
 			// delete the pointer of the newObject from the root set;

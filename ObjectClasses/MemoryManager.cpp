@@ -77,8 +77,7 @@ int MemoryManager::allocateObjectToRootset(int size, int threadNumber,
 	return id;
 }
 
-int MemoryManager::allocateObject(int size, int maxPointers,
-		Object* creatorObject, int pointerIndex, int creationDate){
+int MemoryManager::allocateObject(int size, int maxPointers, Object* creatorObject, int pointerIndex, int creationDate){
 	//check if you can create more objects and get a slot in object list
 	int listSlot = getListSlot();
 	if(listSlot<0){
@@ -106,6 +105,21 @@ Object* MemoryManager::allocateObject(int size, int threadNumber, int maxPointer
 	newObject->setThreadID(threadNumber);
 	return newObject;
 }
+
+
+
+Object* MemoryManager::allocateObject(int size, int threadNumber, int maxPointers,int creationDate, int classID, int primField){
+
+	int objectID = nextId;
+	nextId++;
+	Object* newObject = new Object(objectID, size, maxPointers, creationDate, classID, primField);
+	//new
+	newObject->setThreadID(threadNumber);
+	return newObject;
+}
+
+
+
 
 int MemoryManager::setPointer(Object* startObject, int pointerIndex, Object* targetObject){
 	return startObject->setPointer(pointerIndex,targetObject);

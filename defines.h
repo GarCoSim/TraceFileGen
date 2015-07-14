@@ -20,9 +20,12 @@
 //the maximum number of child objects in an object
 #define MAX_POINTERS    10
 
+//the maximum number of primities fields in an object
+#define MAX_PRIMITIVES   6
+
 //the minimum/maximum payload size of an object
-#define MIN_PAYLOAD     1
-#define MAX_PAYLOAD     64
+#define MIN_PAYLOAD     24 // 16 for header + 8 for one field
+#define MAX_PAYLOAD     144
 
 // the probability that a reference operation will create an escaped object (in %)
 #define ESCAPE_PROBABILITY 5
@@ -52,7 +55,7 @@
  * -: delete from root set
  * */
 
-#define ALLOCATION 70
+//#define ALLOCATION 70
 /* The ratio of how often allocation ( (a+) & (a + w - ) ) are performed */
 #define RATIO_ALLOCATION 70
 
@@ -63,6 +66,11 @@
 
 /* Ratio of operations on objects accessible by the given thread*/
 #define THREADRATIO 90
+
+/* Let say maximum 30 objects can be created from a class*/
+#define MAXACCESS 30
+
+
 
 
 #endif

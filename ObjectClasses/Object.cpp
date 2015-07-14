@@ -7,6 +7,11 @@
 
 #include "Object.h"
 #include "stdio.h"
+#include <stdlib.h>
+#include <string.h>
+
+#include <time.h>
+
 
 namespace traceGen {
 
@@ -25,6 +30,11 @@ Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation) {
 	myClassId = 0;
 	/* A thread id must be positive integer */
 	myTid = -1;
+
+	nPrimitives = 0;
+	vecPrim[0] = 0; // for char 8
+	vecPrim[1]= 0;  // for int 32
+	vecPrim[2] =0;  // for long 64
 }
 
 Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId) {
@@ -38,7 +48,44 @@ Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int
 	visited = 0;
 	creationDate = dateOfCreation;
 	myClassId = classId;
+
+	nPrimitives = 0;
+	vecPrim[0] = 0; // for char 8
+	vecPrim[1]= 0;  // for int 32
+	vecPrim[2] =0;  // for long 64
 }
+
+
+Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId, int primField) {
+
+	//prepare data structure
+	myId = id;
+	
+	//myPayoadSize = payloadSize;
+
+	myPointersCurrent = 0;
+	myPointersMax = maxPointers;
+	pointers.resize(maxPointers);
+	visited = 0;
+	creationDate = dateOfCreation;
+	myClassId = classId;
+	nPrimitives = primField;
+
+	vecPrim[0] = (rand()% nPrimitives)+1 ; // for char 8
+	vecPrim[1]= (rand()% (nPrimitives-vecPrim[0] ) ) +1 ;  // for int 32
+	while(1){
+
+		if ( (vecPrim[0]+vecPrim[1])< nPrimitives ){
+			break;
+		}
+		vecPrim[1]= (rand()% (nPrimitives-vecPrim[0] ) ) +1 ;  // for int 32
+	}
+
+	vecPrim[2] = nPrimitives - (vecPrim[0]+vecPrim[1]);  // for long 64
+	myPayoadSize = 16 + vecPrim[0]*8 + vecPrim[1]*32 + vecPrim[2]*64 + myPointersMax*8;
+
+}
+
 
 
 int Object::getID(){
@@ -88,6 +135,28 @@ void Object::setThreadID(int tid){
 int	Object::getThreadID(){
 	return myTid;
 }
+////////////////////////////////////////////////////////////////////////////////////
+
+int Object::getFieldOffset(int index, int fieldType){
+	
+
+}
+int Object::getFieldSize(int fieldType){
+	if (fieldType == 0){
+		return 8;
+	}
+	else if(fieldType == 1){
+		return 32;
+	}
+	else if(fieldType == 2){
+		return 64;
+	}
+	else if(fieldType == 3){
+		return 8;
+	}
+}
+/////////////////////////////////////////////////////////////////////////////////
+
 
 Object::~Object() {
 }
