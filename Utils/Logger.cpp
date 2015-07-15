@@ -121,6 +121,35 @@ void Logger::logRefOperation(int thread, int parentID, int parentSlot, int child
 }
 
 
+void Logger::logreadRefFromObjectOperation(int thread, int parentID, int parentSlot, int fieldSize, int v){
+	fprintf(trace,"r T%d O%d I%d S%d V%d\n",
+			thread,
+			parentID,
+			parentSlot,
+			fieldSize,
+			v);
+
+}
+
+
+
+void Logger::logstoreObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v ){
+	fprintf(trace,"s T%d O%d F%d S%d V%d\n",
+			thread,
+			parentID,
+			fieldOffset,
+			fieldSize,
+			v);
+}
+
+void Logger::logreadObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v ){
+	fprintf(trace,"r T%d P%d F%d S%d V%d\n",
+			thread,
+			parentID,
+			fieldOffset,
+			fieldSize,
+			v);
+}
 
 void Logger::logEnd(){
 //	fprintf(dot,"}\n");

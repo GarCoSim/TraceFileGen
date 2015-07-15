@@ -19,7 +19,6 @@
 using namespace std;
 
 extern int NUM_THREADS ;
-extern int ROOTSET_SIZE ; 
 
 
 namespace traceGen {

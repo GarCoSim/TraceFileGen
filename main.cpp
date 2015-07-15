@@ -14,8 +14,7 @@ FILE* gDetLog;
 
 
 int NUM_THREADS ;
-int clazz  ;
-int ROOTSET_SIZE ;      
+int clazz  ;   
 int longevity ; 
 int escape ;    
 int RATIO_ALLOC_SET; 
@@ -116,7 +115,6 @@ int main(int argc, char *argv[]){
 						"  --iteration x, -i x       uses x number as the number of iterations (default: 100)\n" \
 						"  --thread x, -t x      	 uses x number as the number of threads (default: 10)\n" \
 						"  --clazz x, -c x      	 uses x number as the number of classes (default: 300)\n" \
-						"  --rootset x, -rs x      	 uses x number as the size of maximum rootset (default: 50)\n" \
 						"  --payload x, -p x      	 uses x bytes as the maximum size of an object(default: 100)\n" \
 						"  --longevity x, -l x       uses x number as the maximum of operations before an object dead (default: 10000)\n" \
 						"  --escape x, -e x          uses x probability as the an object to be escaped (default: 20)\n" \
@@ -124,7 +122,6 @@ int main(int argc, char *argv[]){
 						"  --storeaccess x, -s x      	 uses x percent as the store (default: 10)\n" \
 						"  --readaccess x, -r x      		 uses x percent as the read (default: 88)\n" \
 						"  --deleteroot x, -r x    uses x percent as the rootdelete (default: 10)\n" \
-						"  --static x, -or x      uses x percent as the ratio of static field oepration (default: 30)\n" \
 						);
 		exit(1);
 	}
@@ -139,26 +136,25 @@ int main(int argc, char *argv[]){
 		 int iterations = setArgs(argc, argv, "--iteration",  "-i");
 		 NUM_THREADS      = setArgs(argc, argv, "--thread",  "-t");
 		 clazz       = setArgs(argc, argv, "--class",  "-c");
-		 ROOTSET_SIZE     = setArgs(argc, argv, "--rootset",  "-rs");
 		 longevity  = setArgs(argc, argv, "--longevity",  "-l");
 		 escape      = setArgs(argc, argv, "--escape",  "-e");
 		 RATIO_ALLOC_SET = setArgs(argc, argv, "--allocation",  "-a");
 		 readaccess  		= setArgs(argc, argv, "--read",  "-r");
 		 storeaccess  	    = setArgs(argc, argv, "--store",  "-s");
-		 ratiostaticfield = setArgs(argc, argv, "--static",  "-s");
 		 ROOT_DELETE_PROBABILITY 	= setArgs(argc, argv, "--deleteaccess",  "-d");
 
 		iterations = iterations <0 ? 100 : iterations;
 		NUM_THREADS   = NUM_THREADS <0 ? 10 : NUM_THREADS;
 		clazz 	 = clazz <0 ?  300 : clazz;
-		ROOTSET_SIZE  = ROOTSET_SIZE <0 ? 50 : ROOTSET_SIZE;
 		longevity= longevity <0 ? 10000 : longevity;
 		escape   = escape <0 ? 20 : escape;
+
 		RATIO_ALLOC_SET = RATIO_ALLOC_SET <0 ? 2 : RATIO_ALLOC_SET;
-		readaccess = readaccess < 0 ? 80 : readaccess;
+		readaccess = readaccess < 0 ? 80-RATIO_ALLOC_SET : readaccess;
 		storeaccess = storeaccess <0 ? 10 : storeaccess;
-		ratiostaticfield = ratiostaticfield <0 ? 30 : ratiostaticfield;
-		ROOT_DELETE_PROBABILITY = ROOT_DELETE_PROBABILITY <0 ? 10 : ROOT_DELETE_PROBABILITY;
+		ROOT_DELETE_PROBABILITY = ROOT_DELETE_PROBABILITY <0 ? 8 : ROOT_DELETE_PROBABILITY;
+
+
 
 		fprintf(gDetLog, "TraceFileGenerator v-%.2f\n", VERSION);
 		fprintf(gDetLog, "Number of iteration: %d\n", iterations);
@@ -173,7 +169,7 @@ int main(int argc, char *argv[]){
 		fprintf(gDetLog, "Ration of read access: %d\n", readaccess);
 		fprintf(gDetLog, "Ratio of store access: %d\n", storeaccess);
 
-		fprintf(gDetLog, "Ratio of static field access: %d\n", ratiostaticfield);
+		fprintf(gDetLog, "Ratio of static field access: %d\n", STATIC_FIELD_ACCESS);
 		fprintf(gDetLog, "Ratio of rootsetdeletion: %d\n", ROOT_DELETE_PROBABILITY);
 
 		Simulator* sim = new Simulator(filename);

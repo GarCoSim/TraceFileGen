@@ -20,13 +20,11 @@ using namespace std;
 FILE* classFilePointer;
 
 extern int NUM_THREADS ;
-extern int ROOTSET_SIZE ; 
 extern int RATIO_ALLOC_SET ;
 extern int readaccess ;
 extern int storeaccess ;
 extern int clazz;
 
-extern int ratiostaticfield;
 extern int ROOT_DELETE_PROBABILITY;
 
 extern int clazz ;
@@ -318,27 +316,29 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 		int k = j + readaccess;
 		int l = k + ROOT_DELETE_PROBABILITY;
 		int x = rand()%100;
-
+		//printf("i=%d j=%d k=%d l=%d x=%d\n", i,j,k,l,x);
 		if( (0 <= x)&&(x <= i) ){
-			printf( "Allocation....\n");
+			printf( "Select Allocation....\n");
 			allocationRandomObjectAARD(thread);
 		}
 		
 		else if( ( i < x) && (x <= j) ){
 			// store operations
+			printf( "Select Store....\n");
 			int doStore = rand() % 100;
 			int storeInObject = rand()%100;
 			if(doStore <  PRIMITIVE_PROBABILITY ){
-				if(storeInObject > ratiostaticfield){
-					//storeObjectFiledWithPrimitive(thread);
+				if(storeInObject > STATIC_FIELD_ACCESS){
+					storeObjectFiledWithPrimitive(thread);
 				}
 				else{
 					//storeClassFiledWithPrimitive(thread);
 				}
 			}
 			else{
-				if(storeInObject > ratiostaticfield){
-					//setReferenceToObject(thread);
+				if(storeInObject > STATIC_FIELD_ACCESS){
+
+					setReferenceToObject(thread);
 				}
 				else{
 					//setReferenceToClass(thread);
@@ -347,36 +347,39 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 		}
 		else if( ( j< x) && ( x <= k) ){
 			// read operations
+			printf( "Select Read....\n");
 			int doRead = rand() % 100;
 			int readFromObject = rand()%100;
 			if(doRead< PRIMITIVE_PROBABILITY ){
-				if(readFromObject > ratiostaticfield){
-					//readObjectFiledWithPrimitive(thread);
+				if(readFromObject > STATIC_FIELD_ACCESS){
+					readObjectFiledWithPrimitive(thread);
 				}
 				else{
 					//readClassFiledWithPrimitive(thread);
 				}
 			}
 			else{
-				if(readFromObject > ratiostaticfield){
-					//readReferenceToObject(thread);
+				if(readFromObject > STATIC_FIELD_ACCESS){
+					readReferenceFromObject(thread);
 				}
 				else{
-					//readReferenceToClass(thread);
+					//readReferenceFromClass(thread);
 				}
 			}
 		}
 		else if( ( k< x) && ( x <= l) ){
+			printf( "Select Add/DeleteRootset....\n");
 			int addDel = rand() % 100;
+			
 			if(addDel>50){
 				//add the pointer of an existing object to the root set of either the same thread or other thread
 				//
-				//addReferenceToRootset(thread);
+				addReferenceToRootset(thread);
 			}
 			else{
 				//delete the pointer of an existing object from the root set
 				//
-				//deleteReferenceFromRootset(thread);
+				deleteReferenceFromRootset(thread);
 			}
 		}
 		
@@ -512,14 +515,15 @@ void Simulator::allocationRandomObjectAARD(int thread){
 
 			// do reference operation; just set pointer parent to child
 			memManager->setPointer(parent,rnd, newObject);
-			int fieldIndex = rand()%outGoingRefsMax;
+			//int fieldIndex = rand()%outGoingRefsMax;
 			
 			//log->logRefOperation(thread,parent->getID(),rnd, newObject->getID());
-			log->logRefOperation(thread,parent->getID(),rnd, newObject->getID(), parent->getFieldOffset(fieldIndex, refType), (int)8, (int)rand()%2 );
+			log->logRefOperation(thread,parent->getID(),rnd, newObject->getID(), parent->getFieldOffset(rnd, REFTYPE), (int)8, (int)rand()%2 );
 
 			// delete the pointer of the newObject from the root set;
 			// newObject was actually added to the end of the rooset, so it can be deleted from the last
 			memManager->deleteEndFromRootset(thread);
+			
 			log->deletefromRoot(thread, newObject->getID());
 		}
 	}
@@ -571,11 +575,79 @@ void Simulator::addReferenceToRootset(int thread){
 		// object already exists in root set;
 		return;
 	}
-
+	
 	memManager->addObjectToRootset(object, targetThread);
+
 	log->addToRoot(targetThread, object->getID());
 }
 
+void Simulator::storeObjectFiledWithPrimitive(int thread){
+
+	int rootSetSize = memManager->getRootsetSize(thread);
+	int rootSlotNumber;
+
+	if(rootSetSize){
+		rootSlotNumber = rand() % (rootSetSize);
+	}else{
+		//printf("No object created for this thread\n");
+		return;
+	}
+	Object* temp;
+	Object* parent = memManager->getRoot(thread, rootSlotNumber);
+	int rnd, rnd2;
+
+	temp = parent;
+	while(temp){
+		parent = temp;
+		rnd = rand() % parent->getPointersMax();
+		temp = parent->getReferenceTo(rnd);
+		//if I would like to stop, I stop
+		rnd2 = rand() % 100;
+		if(rnd2 < 30){
+			break;
+		}
+	}
+	int primIndex = rand() % parent->getNumOfPrimField();
+	int primType = rand()%3;
+
+	log->logstoreObjFieldWithPrimOperation(thread, parent->getID(), parent->getFieldOffset(primIndex, primType), parent->getFieldSize(primType), (int)rand()%2 );
+
+}
+
+
+
+void Simulator::readObjectFiledWithPrimitive(int thread){
+
+	int rootSetSize = memManager->getRootsetSize(thread);
+	int rootSlotNumber;
+
+	if(rootSetSize){
+		rootSlotNumber = rand() % (rootSetSize);
+	}else{
+		//printf("No object created for this thread\n");
+		return;
+	}
+	Object* temp;
+	Object* parent = memManager->getRoot(thread, rootSlotNumber);
+	int rnd, rnd2;
+
+	temp = parent;
+	while(temp){
+		parent = temp;
+		rnd = rand() % parent->getPointersMax();
+		temp = parent->getReferenceTo(rnd);
+		//if I would like to stop, I stop
+		rnd2 = rand() % 100;
+		if(rnd2 < 30){
+			break;
+		}
+	}
+	int primIndex = rand() % parent->getNumOfPrimField();
+	int primType = rand()%3;
+
+	log->logreadObjFieldWithPrimOperation(thread, parent->getID(), parent->getFieldOffset(primIndex, primType), parent->getFieldSize(primType), (int)rand()%2 );
+
+}
 
 
 void Simulator::setReferenceToObject(int thread){
@@ -648,9 +720,91 @@ void Simulator::setReferenceToObject(int thread){
 	if(parent != child){
 		slotNumber = rand() % parent->getPointersMax();
 		memManager->setPointer(parent,slotNumber,child);	
-		log->logRefOperation(thread,parent->getID(),slotNumber,child->getID());
+		//log->logRefOperation(thread,parent->getID(),slotNumber,child->getID());
+		
+		log->logRefOperation(thread,parent->getID(),slotNumber,child->getID(),  parent->getFieldOffset(slotNumber, REFTYPE), (int)8, (int)rand()%2 );
 	}
 }
+
+
+void Simulator::readReferenceFromObject(int thread){
+	int targetThread;
+	int rootSetSize = memManager->getRootsetSize(thread);
+	int rootSlotNumber;
+
+	if(rootSetSize){
+		rootSlotNumber = rand() % (rootSetSize);
+	}else{
+		//printf("No object created for this thread\n");
+		return;
+	}
+
+	// most reference operations will be performed within the thread.
+	// escaping object are less likely;
+	int shouldEscape = rand() % 100;
+	if(shouldEscape < ESCAPE_PROBABILITY){
+		/*an escape will happen. Now the decision is whether
+		*to the partner, or to a random thread*/
+		int partner = rand()%100;
+		if(partner < ESPACE_TO_PARTNER){
+			targetThread = getPartnerThread(thread);
+		}else{
+			targetThread = rand() % NUM_THREADS;
+		}
+	}else{
+		// don't escape.
+		targetThread = thread;
+	}
+
+	Object* temp;
+	Object* parent = memManager->getRoot(thread, rootSlotNumber);
+	int rnd, rnd2;
+
+	temp = parent;
+	while(temp){
+		parent = temp;
+		rnd = rand() % parent->getPointersMax();
+		temp = parent->getReferenceTo(rnd);
+
+		//if I would like to stop, I stop
+		rnd2 = rand() % 100;
+		if(rnd2 < 30){
+			break;
+		}
+	}
+
+	int childRootSetSize = memManager->getRootsetSize(targetThread);
+	int slotNumber;
+	if(childRootSetSize){
+		slotNumber = rand() % (childRootSetSize);
+	}else{
+		//printf("No object created for the targetThread\n");
+		return;
+	}
+	Object* child = memManager->getRoot(targetThread, slotNumber);
+	temp = child;
+	while(temp){
+		child = temp;
+		rnd = rand() % child->getPointersMax();
+		temp = child->getReferenceTo(rnd);
+		rnd = rand() % 100;
+		if(rnd < 30){
+			break;
+		}
+	}
+
+	// create the reference picked
+	if(parent != child){
+		slotNumber = rand() % parent->getPointersMax();
+		memManager->setPointer(parent,slotNumber,child);	
+		//log->logRefOperation(thread,parent->getID(),slotNumber,child->getID());
+		
+		log->logreadRefFromObjectOperation(thread,parent->getID(),slotNumber, (int)8, (int)rand()%2 );
+	}
+}
+
+
+
 
 
 void Simulator::deleteReferenceFromRootset(int thread){

@@ -7,7 +7,7 @@
 //using namespace gcKons;
 
 //Rootset size
-//#define ROOTSET_SIZE    10
+#define ROOTSET_SIZE    10
 
 //number of threads
 //#define NUM_THREADS	10
@@ -54,15 +54,17 @@
  * w: reference operation
  * -: delete from root set
  * */
-
 //#define ALLOCATION 70
 /* The ratio of how often allocation ( (a+) & (a + w - ) ) are performed */
 #define RATIO_ALLOCATION 70
 
 
-#define REFERENCE 40
+//#define REFERENCE 40
 
-#define CREFERENCE 90
+//#define CREFERENCE 90
+
+/* ratio of static field access */
+#define STATIC_FIELD_ACCESS 30 
 
 /* Ratio of operations on objects accessible by the given thread*/
 #define THREADRATIO 90
@@ -70,10 +72,10 @@
 /* Let say maximum 30 objects can be created from a class*/
 #define MAXACCESS 30
 
-/* Field types*/
-#define charType 0
-#define intType 1
- #define longType 2
- #define refType 3
+/* Field types */
+#define CHARTYPE 0 
+#define INTTYPE 1
+ #define LONGTYPE 2
+ #define REFTYPE 3
 
 #endif

@@ -34,8 +34,18 @@ private:
 	void referenceOperation(int thread);
 	int getPartnerThread(int thread);
 
+	
+	/*possible primitives access operations */
+
+	void storeObjectFiledWithPrimitive(int thread);
+	void readObjectFiledWithPrimitive(int thread);
+	void readReferenceFromObject(int thread);
+
+	
+
 	/* possible reference operations */
 	void setReferenceToObject(int thread); // 'w'
+
 	void addReferenceToRootset(int thread); // '+'
 	void deleteReferenceFromRootset(int thread); // '-'
 	void setReferenceToClass(int thread); // 'c'

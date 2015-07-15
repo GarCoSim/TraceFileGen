@@ -181,6 +181,10 @@ int Object::getFieldSize(int fieldType){
 		return 0;
 	}
 }
+int Object::getNumOfPrimField(){
+	return nPrimitives;
+}
+
 /////////////////////////////////////////////////////////////////////////////////
 
 

@@ -34,6 +34,7 @@ public:
 	int		getThreadID();
 	int 	getFieldOffset(int index,  int fieldType);
 	int 	getFieldSize(int index);
+	int 	getNumOfPrimField();
 	int 	visited;
 	int 	creationDate;
 	int     vecPrim[3] ;

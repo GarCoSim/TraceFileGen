@@ -40,6 +40,9 @@ public:
 	void addToRoot(int thread,int id);
 
 
+	void logstoreObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v );
+	void logreadObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v );
+	void logreadRefFromObjectOperation(int thread, int parentID, int parentSlot, int fieldSize, int v);
 
 private:
 	FILE* trace;
