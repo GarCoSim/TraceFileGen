@@ -70,7 +70,10 @@
 /* Let say maximum 30 objects can be created from a class*/
 #define MAXACCESS 30
 
-
-
+/* Field types*/
+#define charType 0
+#define intType 1
+ #define longType 2
+ #define refType 3
 
 #endif

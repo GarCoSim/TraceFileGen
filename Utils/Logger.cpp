@@ -108,6 +108,20 @@ void Logger::logRefOperation(int thread, int parentID, int parentSlot, int child
 	//fprintf(dot,"%d -> %d;\n", parentID, childID);
 }
 
+void Logger::logRefOperation(int thread, int parentID, int parentSlot, int childID, int fieldOffset, int fieldSize, int v){
+	fprintf(trace,"w T%d P%d #%d O%d F%d S%d V%d\n",
+			thread,
+			parentID,
+			parentSlot,
+			childID,
+			fieldOffset,
+			fieldSize,
+			v);
+
+}
+
+
+
 void Logger::logEnd(){
 //	fprintf(dot,"}\n");
 	//system("dot -Tpng gcKons.dot -o gcKons.png");

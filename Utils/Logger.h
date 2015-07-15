@@ -22,6 +22,7 @@ public:
 
 	/* reference object to object : (w T1 P64 #3 O63) */
 	void logRefOperation(int thread, int parentID, int parentSlot, int childID);
+	void logRefOperation(int thread, int parentID, int parentSlot, int childID, int fieldOffset, int fieldSize, int v);
 	void logEnd();
 
 	void deleteRoot(int thread,int root);

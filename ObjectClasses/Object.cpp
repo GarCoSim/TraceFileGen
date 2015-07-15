@@ -70,15 +70,18 @@ Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int
 	creationDate = dateOfCreation;
 	myClassId = classId;
 	nPrimitives = primField;
+	
+	vecPrim[0] = (rand()% nPrimitives); // for char 8
+	vecPrim[1]= (rand()% nPrimitives) ;  // for int 32
+	
 
-	vecPrim[0] = (rand()% nPrimitives)+1 ; // for char 8
-	vecPrim[1]= (rand()% (nPrimitives-vecPrim[0] ) ) +1 ;  // for int 32
 	while(1){
 
 		if ( (vecPrim[0]+vecPrim[1])< nPrimitives ){
 			break;
 		}
-		vecPrim[1]= (rand()% (nPrimitives-vecPrim[0] ) ) +1 ;  // for int 32
+		vecPrim[0] = (rand()% nPrimitives); // for char 8
+		vecPrim[1]= (rand()% nPrimitives) ;  // for int 32
 	}
 
 	vecPrim[2] = nPrimitives - (vecPrim[0]+vecPrim[1]);  // for long 64
@@ -139,7 +142,26 @@ int	Object::getThreadID(){
 
 int Object::getFieldOffset(int index, int fieldType){
 	
-
+	if(fieldType == 3){
+		// return offset of the reference field
+		return 16 + vecPrim[0]*8 + vecPrim[1]*32 + vecPrim[2]*64 + 8*index;
+	}
+	else if(fieldType == 0){
+		// return offset of char filed
+		return 16+index*8;
+	}
+	else if(fieldType == 1){
+		// return offest of int field
+		return 16+ vecPrim[0]*8 + index*32;
+	}
+	else if(fieldType == 2){
+		//return offset of long field
+		return 16 + vecPrim[0]*8 + vecPrim[1]*32 + index*64;
+	}
+	else{
+		// offset of the object header
+		return 0;
+	}
 }
 int Object::getFieldSize(int fieldType){
 	if (fieldType == 0){
@@ -153,6 +175,10 @@ int Object::getFieldSize(int fieldType){
 	}
 	else if(fieldType == 3){
 		return 8;
+	}
+	else{
+		// field size never be 0;
+		return 0;
 	}
 }
 /////////////////////////////////////////////////////////////////////////////////
