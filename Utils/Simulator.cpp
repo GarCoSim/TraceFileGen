@@ -798,12 +798,10 @@ void Simulator::readReferenceFromObject(int thread){
 		slotNumber = rand() % parent->getPointersMax();
 		memManager->setPointer(parent,slotNumber,child);	
 		//log->logRefOperation(thread,parent->getID(),slotNumber,child->getID());
-		
+
 		log->logreadRefFromObjectOperation(thread,parent->getID(),slotNumber, (int)8, (int)rand()%2 );
 	}
 }
-
-
 
 
 
