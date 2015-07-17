@@ -134,7 +134,7 @@ void Logger::logreadRefFromObjectOperation(int thread, int parentID, int parentS
 
 
 void Logger::logstoreObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v ){
-	fprintf(trace,"s T%d O%d F%d S%d V%d\n",
+	fprintf(trace,"s T%d P%d F%d S%d V%d\n",
 			thread,
 			parentID,
 			fieldOffset,
@@ -143,7 +143,7 @@ void Logger::logstoreObjFieldWithPrimOperation(int thread, int parentID, int fie
 }
 
 void Logger::logreadObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v ){
-	fprintf(trace,"r T%d P%d F%d S%d V%d\n",
+	fprintf(trace,"r T%d O%d F%d S%d V%d\n",
 			thread,
 			parentID,
 			fieldOffset,
