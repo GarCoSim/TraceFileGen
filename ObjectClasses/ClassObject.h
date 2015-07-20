@@ -21,16 +21,22 @@ namespace traceGen {
 
 class ClassObject {
 public:
-	ClassObject(int classId, string name, int staticReference);
+	ClassObject(int classId, string clsName, int staticReference);
 	virtual ~ClassObject();
 	inline int getId(){ return myId;}
+	inline int getSize(){return mySize;}
+	inline int getStaticFieldCount(){return pointerSize;}
+	inline void increaseAccess(){ acc++; }
+	inline int getAccessCount(){return acc;}
+	inline string getName(){return myName;}
 private:
 	int myId;
 	string myName;
 	int mySize;
-	int maxPointerSize;
+	int pointerSize;
 	int nPrimitives;
 	int countFieldType[3]; 
+	int acc;
 };
 }
 #endif /* CLASSOBJECT_H_ */

@@ -17,8 +17,6 @@
 using namespace std;
 
 
-FILE* classFilePointer;
-
 extern int NUM_THREADS ;
 extern int RATIO_ALLOC_SET ;
 extern int readaccess ;
@@ -28,16 +26,6 @@ extern int clazz;
 extern int ROOT_DELETE_PROBABILITY;
 
 extern int clazz ;
-
-typedef struct Tabe{
-	int id;
-	int nField;
-	int nStatic;
-	int acc;
-	char className[20];
-}classTable;
-
-classTable *traceClassTable;
 
 namespace traceGen {
 
@@ -267,41 +255,12 @@ int Simulator::test(){
 }
 
 
-void Simulator::initializeClassTable(int nClass){
-	memManager-> buildClassTable(nClass);
-}
-
-void Simulator::initializeClassTable(char *classfilename){
-
-	
-	traceClassTable = new classTable[clazz];
-	
-	classFilePointer = fopen(classfilename,"w+");
-
-	for(int i=0; i<clazz; i++){
-		
-		traceClassTable[i].id = i+1;
-		int f = rand()%100;
-		int s = rand()%10;
-		while(s > f){
-			f = rand()%100;
-			s = rand()%10;
-		}
-		traceClassTable[i].nField = f;
-		traceClassTable[i].nStatic = s;
-		traceClassTable[i].acc = 0;
-		
-		stringstream ss;
-		ss << i;
-		string str = "kdm"+ss.str();
-		strcpy(traceClassTable[i].className, str.c_str());
-		fprintf(classFilePointer, "C%d I%d #%d %s\n", traceClassTable[i].id, traceClassTable[i].nField, traceClassTable[i].nStatic, traceClassTable[i].className);
-
-	}
+void Simulator::initializeClassTable(char* classfilename){
+	memManager-> buildClassTable(clazz);
+	memManager->printClassTable(classfilename);
 }
 
 int Simulator::runTraceFileGenerator(int simulationSteps){
-
 
 	stepsToGo = simulationSteps;
 	currentStep = simulationSteps;
@@ -442,7 +401,6 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 	*/
 
 	}
-	delete [] traceClassTable;
 
 	return 1;
 }
@@ -468,18 +426,24 @@ void Simulator::allocationRandomObjectAARD(int thread){
 
 	//int classID = rand()%100;
 	//3.0
+
 	int classID;
 	int clsIndex = rand()%clazz;
+	ClassObject* clsObj = memManager->getClassObject(clsIndex);
+
 	// select class which has been acceessed (hit) less
-	while(1){
-		if( traceClassTable[clsIndex].acc < (int)(MAXACCESS/2) ){
-			classID = clsIndex+1;
-			traceClassTable[clsIndex].acc = traceClassTable[clsIndex].acc +1;
+	int cnt = 0;
+	while(clsObj->getAccessCount()>MAXACCESS){
+		cnt++;
+		clsIndex = rand()%clazz;
+		clsObj = memManager->getClassObject(clsIndex);
+		if(cnt == 30){
 			break;
 		}
-		clsIndex = rand()%clazz;
 	}
 
+	classID = clsObj->getId();
+	clsObj->increaseAccess();
 	//newObject = memManager->allocateObject(size, thread, outGoingRefsMax, currentStep, classID);
 	newObject = memManager->allocateObject(size, thread, outGoingRefsMax, currentStep, classID, primitiveField); // 3.0
 	memManager->addObjectToRootset(newObject, thread);

@@ -1,2 +1,2 @@
 all:
-	g++ ObjectClasses/MemoryManager.cpp ObjectClasses/Object.cpp Utils/Logger.cpp Utils/Simulator.cpp main.cpp -g  -o traceGen
+	g++ ObjectClasses/MemoryManager.cpp ObjectClasses/ClassObject.cpp ObjectClasses/Object.cpp Utils/Logger.cpp Utils/Simulator.cpp main.cpp -g  -o traceGen

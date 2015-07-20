@@ -12,15 +12,17 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "ClassObject.h"
 #include "MemoryManager.h"
 //#include "../Utils/configReader.h"
 #include "Object.h"
-#include "ClassObject.h"
+
 
 using namespace std;
 
 extern int NUM_THREADS ;
 
+FILE* classFilePointer;
 
 namespace traceGen {
 
@@ -297,17 +299,25 @@ int MemoryManager::getARandomObjectID(int thread){
 
 void MemoryManager::buildClassTable(int nClass){
 	classList.resize(nClass);
-	
+
 	for(int i=0; i<(int)classList.size(); i++){
 		stringstream ss;
 		ss << i;
 		string str = "kdm"+ss.str();
 		int statRefField = rand()% MAX_POINTERS+1;
-		ClassObject* clsObj = new ClassObject (i+1, str, statRefField);
-		//classList[i] = clsObj;
+		ClassObject* clsObj = new ClassObject (i, str, statRefField);
+		classList[i] = clsObj;
 	}
 }
 
+void MemoryManager::printClassTable(char *classfilename){
+
+	classFilePointer = fopen(classfilename,"w+");
+	for(int i=0; i<(int)classList.size(); i++){
+		fprintf(classFilePointer, "C%d I%d #%d %s\n", classList[i]->getId(), classList[i]->getSize(), classList[i]->getStaticFieldCount(), classList[i]->getName().c_str());
+	}
+	fclose(classFilePointer);
+}
 
 
 MemoryManager::~MemoryManager() {

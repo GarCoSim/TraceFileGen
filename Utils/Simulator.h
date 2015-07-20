@@ -21,8 +21,7 @@ public:
 	virtual ~Simulator();
 	int run(int simulationSteps);
 	/* runTracetFileGenerator() is a modified method of run() */
-	void initializeClassTable(char* classfilename);
-	void initializeClassTable(int nClass);
+	void initializeClassTable(char* classfilename );
 	int runTraceFileGenerator(int simulationSteps);
 	int test();
 private:

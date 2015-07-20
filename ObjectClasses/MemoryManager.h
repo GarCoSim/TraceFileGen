@@ -52,6 +52,8 @@ public:
 	int getARandomObjectID();
 	int getARandomObjectID(int thread);
 	void buildClassTable(int nClass);
+	void printClassTable(char *classfilename);
+	inline ClassObject* getClassObject(int clsIndex){return classList[clsIndex];}
 
 private:
 	int getListSlot();
