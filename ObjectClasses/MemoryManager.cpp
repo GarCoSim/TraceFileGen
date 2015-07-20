@@ -304,7 +304,7 @@ void MemoryManager::buildClassTable(int nClass){
 		stringstream ss;
 		ss << i;
 		string str = "kdm"+ss.str();
-		int statRefField = rand()% MAX_POINTERS+1;
+		int statRefField = rand()% MAX_POINTERS;
 		ClassObject* clsObj = new ClassObject (i, str, statRefField);
 		classList[i] = clsObj;
 	}
