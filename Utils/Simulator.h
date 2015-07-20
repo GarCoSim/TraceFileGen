@@ -22,6 +22,7 @@ public:
 	int run(int simulationSteps);
 	/* runTracetFileGenerator() is a modified method of run() */
 	void initializeClassTable(char* classfilename);
+	void initializeClassTable(int nClass);
 	int runTraceFileGenerator(int simulationSteps);
 	int test();
 private:

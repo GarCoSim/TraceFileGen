@@ -266,7 +266,13 @@ int Simulator::test(){
 	return 0;
 }
 
+
+void Simulator::initializeClassTable(int nClass){
+	memManager-> buildClassTable(nClass);
+}
+
 void Simulator::initializeClassTable(char *classfilename){
+
 	
 	traceClassTable = new classTable[clazz];
 	

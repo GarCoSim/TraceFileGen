@@ -9,6 +9,7 @@
 #define MEMORYMANAGER_H_
 
 #include "Object.h"
+#include "ClassObject.h"
 #include <vector>
 
 using std::vector;
@@ -50,6 +51,8 @@ public:
 	bool isObjectInRoot(int thread, Object* obj);
 	int getARandomObjectID();
 	int getARandomObjectID(int thread);
+	void buildClassTable(int nClass);
+
 private:
 	int getListSlot();
 	int nextId;
@@ -57,6 +60,8 @@ private:
 	vector<vector<Object*> > rootset;
 	//collection of all objects (dynamic)
 	vector<Object*> objectList;
+
+	vector<ClassObject*>classList;
 };
 
 } /* namespace gcKons */

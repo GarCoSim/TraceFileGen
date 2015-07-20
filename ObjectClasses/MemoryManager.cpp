@@ -15,6 +15,7 @@
 #include "MemoryManager.h"
 //#include "../Utils/configReader.h"
 #include "Object.h"
+#include "ClassObject.h"
 
 using namespace std;
 
@@ -292,6 +293,22 @@ int MemoryManager::getARandomObjectID(int thread){
 	//cout<<"Here"<<endl;
 	return oid;
 }
+
+
+void MemoryManager::buildClassTable(int nClass){
+	classList.resize(nClass);
+	
+	for(int i=0; i<(int)classList.size(); i++){
+		stringstream ss;
+		ss << i;
+		string str = "kdm"+ss.str();
+		int statRefField = rand()% MAX_POINTERS+1;
+		ClassObject* clsObj = new ClassObject (i+1, str, statRefField);
+		//classList[i] = clsObj;
+	}
+}
+
+
 
 MemoryManager::~MemoryManager() {
 }
