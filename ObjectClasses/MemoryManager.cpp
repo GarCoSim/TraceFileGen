@@ -40,7 +40,13 @@ MemoryManager::MemoryManager() {
 		}
 		objectList.resize(NUM_THREADS*ROOTSET_SIZE);
 	}
-
+	
+	// new
+	for(int j = 0; j < NUM_THREADS ; j++){
+		vector<Object*> newRoot ;//= new vector<Object*>();
+		rootset.push_back(newRoot);
+		//	rootset.at(i).resize(ROOTSET_SIZE);
+	}
 }
 
 int MemoryManager::setRootPointer(int threadNumber, int rootsetNumber, Object* newObject){
@@ -51,13 +57,18 @@ int MemoryManager::setRootPointer(int threadNumber, int rootsetNumber, Object* n
 	return 0;
 }
 
-int MemoryManager:: setRootPointer(int threadNumber, Object* newObject){
+int MemoryManager::setRootPointer(int threadNumber, Object* newObject){
 	if(threadNumber >= NUM_THREADS){
 			return -1;
 		}
+	//new added
+			
 	rootset[threadNumber].push_back(newObject);
+	
 	return 0;
 }
+
+
 
 int MemoryManager::allocateObjectToRootset(int size, int threadNumber,
 		int rootSetNumber, int maxPointers, int creationDate){
@@ -158,8 +169,17 @@ void MemoryManager::deleteEndFromRootset(int threadNumber){
 	int deleteIndex = rootset[threadNumber].size()-1;
 	rootset[threadNumber].erase(rootset[threadNumber].begin()+deleteIndex);
 }
+
 void MemoryManager::deleteFromRootset(int threadNumber, int rootSlotNumber){
+	//for(int i=0; i<(int)rootset[threadNumber].size(); i++){
+	//	printf(" Before Root: %d\n", rootset[threadNumber][i]->getID());
+	//}
+	//printf(" =>deleted Root: %d\n", rootset[threadNumber][rootSlotNumber]->getID());
 	rootset[threadNumber].erase(rootset[threadNumber].begin()+rootSlotNumber);
+	//for(int i=0; i<(int)rootset[threadNumber].size(); i++){
+	//	printf(" After Root: %d\n", rootset[threadNumber][i]->getID());
+	//}
+	//rootset[threadNumber][rootSlotNumber] = NULL;//.erase(rootset[threadNumber].begin()+rootSlotNumber);
 }
 
 int MemoryManager::getListSlot(){
@@ -255,6 +275,19 @@ void MemoryManager::addObjectToRootset(Object* newObject, int threadNumber){
 	setRootPointer(threadNumber, newObject);
 }
 
+bool MemoryManager::addExObjectToRootset(Object* obj, int threadNumber){
+	for(int i=0; i<(int)rootset[threadNumber].size(); i++){
+		if( (rootset[threadNumber].at(i) ) && (rootset[threadNumber].at(i) == obj) ){
+			printf("Object is already in root set\n");
+			return true;
+		}
+	}
+	rootset[threadNumber].push_back(obj);
+	return false;
+	//setRootPointer(threadNumber, newObject);
+}
+
+
 bool MemoryManager::isObjectInRoot(int thread, Object* obj){
 	int i;
 	for(i = 0 ; i <(int) rootset[thread].size();  i++){
@@ -305,7 +338,7 @@ void MemoryManager::buildClassTable(int nClass){
 		ss << i;
 		string str = "kdm"+ss.str();
 		int statRefField = rand()% MAX_POINTERS;
-		ClassObject* clsObj = new ClassObject (i, str, statRefField);
+		ClassObject* clsObj = new ClassObject (i+1, str, statRefField);
 		classList[i] = clsObj;
 	}
 }
@@ -314,10 +347,11 @@ void MemoryManager::printClassTable(char *classfilename){
 
 	classFilePointer = fopen(classfilename,"w+");
 	for(int i=0; i<(int)classList.size(); i++){
-		fprintf(classFilePointer, "C%d I%d #%d %s\n", classList[i]->getId(), classList[i]->getSize(), classList[i]->getStaticFieldCount(), classList[i]->getName().c_str());
+		fprintf(classFilePointer, "C%d I%d #%d %s\n", classList[i]->getId(), classList[i]->getSize(), classList[i]->getStaticRefCount(), classList[i]->getName().c_str());
 	}
 	fclose(classFilePointer);
 }
+
 
 
 MemoryManager::~MemoryManager() {

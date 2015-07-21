@@ -31,7 +31,7 @@ public:
 	// overloading
 	int setRootPointer(int threadNumber, Object* newObject);
 	int deletePointer(Object* startObject, int pointerNumber);
-
+	bool addExObjectToRootset(Object* obj, int threadNumber);
 	void deleteRoot(int thread, int root);
 
 	Object* getRoot(int threadNumber, int rootSlotNumber);

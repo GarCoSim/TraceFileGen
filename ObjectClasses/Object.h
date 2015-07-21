@@ -35,6 +35,7 @@ public:
 	int 	getFieldOffset(int index,  int fieldType);
 	int 	getFieldSize(int index);
 	int 	getNumOfPrimField();
+	int 	primitiveType(int primIndex);
 	int 	visited;
 	int 	creationDate;
 	int     vecPrim[3] ;

@@ -34,13 +34,16 @@ public:
 	void logReadOperation(int thread, int id);
 
 	/* reference class to object : (c T1 C44 O89) */
-	void logRefOperationClaasToObject(int thread, int classID, int id);
-
+	void logRefOperationClaasToObject(int thread, int classID, int slotOffset, int objId, int fieldSize, int v);
+	void logreadRefFromClaas(int thread, int classID, int slotOffset, int fieldSize, int v);
 	/* add object to the root set : (+ T1 O63) */
 	void addToRoot(int thread,int id);
 
 
 	void logstoreObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v );
+	void logstoreClassFieldWithPrimOperation(int thread, int classID, int fieldOffset, int fieldSize, int v );
+	void logreadClassFieldWithPrimOperation(int thread, int classID, int fieldOffset, int fieldSize, int v );
+
 	void logreadObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v );
 	void logreadRefFromObjectOperation(int thread, int parentID, int parentSlot, int fieldSize, int v);
 

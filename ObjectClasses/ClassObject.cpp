@@ -21,6 +21,12 @@ ClassObject::ClassObject(int classId, string clsName, int staticReference) {
 	myId = classId;
 	myName = clsName;
 	pointerSize = staticReference;
+	refContainer.resize(pointerSize);
+	for(int i=0; i<(int)refContainer.size(); i++){
+		refContainer.at(i) = NULL;
+	}
+
+
 	nPrimitives = (rand() % MAX_PRIMITIVES) +1;
 	
 	countFieldType[0] = (rand()% nPrimitives); // for char 8
@@ -39,7 +45,85 @@ ClassObject::ClassObject(int classId, string clsName, int staticReference) {
 	mySize = 16 + countFieldType[0]*8 + countFieldType[1]*32 + countFieldType[2]*64 + pointerSize*8;
 	acc = 0;
 }
+int ClassObject::getFieldOffset(int index, int fieldType){
+	if(fieldType == 3){
+		// return offset of the reference field
+		return 16 + countFieldType[0]*8 + countFieldType[1]*32 + countFieldType[2]*64 + 8*index;
+	}
+	else if(fieldType == 0){
+		// return offset of char filed
+		return 16+index*8;
+	}
+	else if(fieldType == 1){
+		// return offest of int field
+		return 16+ countFieldType[0]*8 + index*32;
+	}
+	else if(fieldType == 2){
+		//return offset of long field
+		return 16 + countFieldType[0]*8 + countFieldType[1]*32 + index*64;
+	}
+	else{
+		// offset of the object header
+		return 0;
+	}
+}
 
+int ClassObject::getFieldSize(int fieldType){
+	if (fieldType == 0){
+		return 8;
+	}
+	else if(fieldType == 1){
+		return 32;
+	}
+	else if(fieldType == 2){
+		return 64;
+	}
+	else if(fieldType == 3){
+		return 8;
+	}
+	else{
+		// field size never be 0;
+		return 0;
+	}
+}
+int ClassObject::primitiveType(int primIndex){
+	if(countFieldType[0] != 0){
+		if ( (int)(primIndex / countFieldType[0]) == 0){
+			return 0;
+		}
+	}
+	if(countFieldType[1] != 0){
+		if ((int)(primIndex / (countFieldType[0]+ countFieldType[1]) ) == 0){
+			return 1;
+		}
+	}
+	if(countFieldType[1] != 0){
+		if ((int)(primIndex / (countFieldType[0]+ countFieldType[1] + countFieldType[2]) ) == 0){
+			return 2;
+		}
+	}
+
+}
+
+void ClassObject::setReference(int Index, Object* obj){
+	refContainer[Index] = obj;
+}
+int ClassObject::getReferenceSlot(){
+	int k = rand()%(int)refContainer.size();
+	while(refContainer[k] != NULL){
+		k = rand()%(int)refContainer.size();
+		int rnd = rand() % 100;
+		if(rnd < 30){
+			break;
+		}
+	}
+	if(refContainer[k] != NULL){
+		return k;
+	}
+	else{
+		return -1;
+	}
+}
 
 
 ClassObject::~ClassObject() {

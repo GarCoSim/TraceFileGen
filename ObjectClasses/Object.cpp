@@ -111,11 +111,11 @@ int Object::getPointersMax(){
 	return myPointersMax;
 }
 Object* Object::getReferenceTo(int pointerNumber){
-/*	if (!pointers[pointerNumber]){
-		printf("errorhere\n");
+	if (!pointers[pointerNumber]){
+		//printf("errorhere\n");
 		fflush(stdout);
 		return NULL;
-	}*/
+	}
 	return pointers[pointerNumber];
 }
 
@@ -183,6 +183,24 @@ int Object::getFieldSize(int fieldType){
 }
 int Object::getNumOfPrimField(){
 	return nPrimitives;
+}
+
+int Object::primitiveType(int primIndex){
+	if(vecPrim[0] != 0){
+		if ( (int)(primIndex / vecPrim[0]) == 0){
+			return 0;
+		}
+	}
+	if(vecPrim[1] != 0){
+		if ((int)(primIndex / (vecPrim[0]+ vecPrim[1]) ) == 0){
+			return 1;
+		}
+	}
+	if(vecPrim[1] != 0){
+		if ((int)(primIndex / (vecPrim[0]+ vecPrim[1] + vecPrim[2]) ) == 0){
+			return 2;
+		}
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////

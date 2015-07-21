@@ -142,6 +142,27 @@ void Logger::logstoreObjFieldWithPrimOperation(int thread, int parentID, int fie
 			v);
 }
 
+
+void Logger::logstoreClassFieldWithPrimOperation(int thread, int classID, int fieldOffset, int fieldSize, int v ){
+	fprintf(trace,"s T%d C%d F%d S%d V%d\n",
+			thread,
+			classID,
+			fieldOffset,
+			fieldSize,
+			v);
+}
+
+void Logger::logreadClassFieldWithPrimOperation(int thread, int classID, int fieldOffset, int fieldSize, int v ){
+	fprintf(trace,"r T%d C%d F%d S%d V%d\n",
+			thread,
+			classID,
+			fieldOffset,
+			fieldSize,
+			v);
+}
+
+
+
 void Logger::logreadObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v ){
 	fprintf(trace,"r T%d O%d F%d S%d V%d\n",
 			thread,
@@ -167,17 +188,34 @@ void Logger::logReadOperation(int thread, int id){
 			id);
 }
 
-void Logger::logRefOperationClaasToObject(int thread, int classID, int id){
+void Logger::logRefOperationClaasToObject(int thread, int classID, int slotOffset, int objId, int fieldSize, int v){
 //	printf("c T%d C%d O%d\n",
 //			thread,
 //			classID,
 //			id);
 //	//fflush(stdout);
-	fprintf(trace, "c T%d C%d O%d\n",
+	fprintf(trace, "c T%d C%d F%d O%d S%d V%d\n",
 			thread,
 			classID,
-			id);
+			slotOffset,
+			objId,
+			fieldSize,
+			v);
 }
+void Logger::logreadRefFromClaas(int thread, int classID, int slotOffset, int fieldSize, int v){
+//	printf("c T%d C%d O%d\n",
+//			thread,
+//			classID,
+//			id);
+//	//fflush(stdout);
+	fprintf(trace, "r T%d C%d F%d S%d V%d\n",
+			thread,
+			classID,
+			slotOffset,
+			fieldSize,
+			v);
+}
+
 void Logger::addToRoot(int thread,int id){
 //	printf("+ T%d O%d\n",
 //			thread,

@@ -43,12 +43,17 @@ private:
 
 	
 
+
 	/* possible reference operations */
 	void setReferenceToObject(int thread); // 'w'
 
 	void addReferenceToRootset(int thread); // '+'
 	void deleteReferenceFromRootset(int thread); // '-'
+
 	void setReferenceToClass(int thread); // 'c'
+	void storeClassFiledWithPrimitive(int thread);
+	void readClassFiledWithPrimitive(int thread);
+	void readReferenceFromClass(int thread);
 	void readObject(int thread); // 'r'
 
 	Logger* log;

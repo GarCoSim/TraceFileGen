@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "Object.h"
 
 using namespace std;
 
@@ -25,10 +26,16 @@ public:
 	virtual ~ClassObject();
 	inline int getId(){ return myId;}
 	inline int getSize(){return mySize;}
-	inline int getStaticFieldCount(){return pointerSize;}
+	inline int getStaticRefCount(){return pointerSize;}
 	inline void increaseAccess(){ acc++; }
+	inline int getNumPrimitives(){return nPrimitives;}
 	inline int getAccessCount(){return acc;}
 	inline string getName(){return myName;}
+	int getFieldOffset(int index, int fieldType);
+	int getFieldSize(int fieldType);
+	int primitiveType(int primIndex);
+	void setReference(int Index, Object* obj);
+	int getReferenceSlot();
 private:
 	int myId;
 	string myName;
@@ -37,6 +44,7 @@ private:
 	int nPrimitives;
 	int countFieldType[3]; 
 	int acc;
+	vector<Object*> refContainer;
 };
 }
 #endif /* CLASSOBJECT_H_ */
