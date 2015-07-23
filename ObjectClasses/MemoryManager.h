@@ -21,10 +21,7 @@ public:
 	virtual ~MemoryManager();
 	int allocateObjectToRootset(int size, int threadNumber, int rootSetNumber, int maxPointers,int creationDate);
 	int allocateObject(int size, int maxPointers, Object* creatorObject, int pointerIndex, int creationDate);
-	// overloading
-	Object* allocateObject(int size, int threadNumber, int maxPointers,int creationDate, int classID);
-	
-	Object* allocateObject(int size, int threadNumber, int maxPointers,int creationDate, int classID, int primField);
+	Object* allocateObjectNew(int threadNumber, int maxPointers,int creationDate, int classID, int primField);
 
 	int setPointer(Object* startObject, int pointerIndex, Object* targetObject);
 	int setRootPointer(int threadNumber, int rootSetNumber, Object* newObject);

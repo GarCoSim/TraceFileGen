@@ -10,6 +10,8 @@
 #include <stdio.h>
 namespace traceGen {
 
+
+
 class Logger {
 public:
 	Logger(char* tracepath);
@@ -46,11 +48,13 @@ public:
 
 	void logreadObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v );
 	void logreadRefFromObjectOperation(int thread, int parentID, int parentSlot, int fieldSize, int v);
+	
 
 private:
 	FILE* trace;
 	FILE* dot;
 };
+
 
 } /* namespace gcKons */
 #endif /* LOGGER_H_ */

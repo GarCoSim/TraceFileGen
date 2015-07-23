@@ -29,6 +29,21 @@ extern int MAXCACCESS;
 extern int ESCAPE_PROBABILITY;
 extern int ESPACE_TO_PARTNER;
 
+
+extern int na;
+extern int ar;
+extern int dr;
+extern int sRo;
+extern int sRc;
+extern int sPo;
+extern int sPc;
+extern int rRo;
+extern int rRc;
+extern int rPo;
+extern int rPc;
+
+
+
 namespace traceGen {
 
 Simulator::Simulator(char* tracepath) {
@@ -377,7 +392,9 @@ void Simulator::allocationRandomObjectAARD(int thread){
 	memManager->addObjectToRootset(newObject, thread);
 
 	log->logAllocation(thread, newObject->getID(), newObject->getPayloadSize(), outGoingRefsMax, clsObj->getId());
+	
 	log->addToRoot(thread, newObject->getID());
+	
 
 	// according to Gerhard
 	/* allocation operations:
@@ -417,11 +434,13 @@ void Simulator::allocationRandomObjectAARD(int thread){
 			
 			//log->logRefOperation(thread,parent->getID(),rnd, newObject->getID());
 			log->logRefOperation(thread,parent->getID(),rnd, newObject->getID(), parent->getFieldOffset(rnd, REFTYPE), (int)8, (int)rand()%2 );
+			
 
 			// delete the pointer of the newObject from the root set;
 			// newObject was actually added to the end of the rooset, so it can be deleted from the last
 			memManager->deleteEndFromRootset(thread);
 			log->deletefromRoot(thread, newObject->getID());
+			
 		}
 	}
 

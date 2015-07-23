@@ -37,32 +37,10 @@ Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation) {
 	vecPrim[2] =0;  // for long 64
 }
 
-Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId) {
-
+Object::Object(int id, int maxPointers, int dateOfCreation, int classId, int primField) {
 	//prepare data structure
 	myId = id;
-	myPayoadSize = payloadSize;
-	myPointersCurrent = 0;
-	myPointersMax = maxPointers;
-	pointers.resize(maxPointers);
-	visited = 0;
-	creationDate = dateOfCreation;
-	myClassId = classId;
-
-	nPrimitives = 0;
-	vecPrim[0] = 0; // for char 8
-	vecPrim[1]= 0;  // for int 32
-	vecPrim[2] =0;  // for long 64
-}
-
-
-Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId, int primField) {
-
-	//prepare data structure
-	myId = id;
-	
 	//myPayoadSize = payloadSize;
-
 	myPointersCurrent = 0;
 	myPointersMax = maxPointers;
 	pointers.resize(maxPointers);
@@ -70,11 +48,8 @@ Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int
 	creationDate = dateOfCreation;
 	myClassId = classId;
 	nPrimitives = primField;
-	
 	vecPrim[0] = (rand()% nPrimitives); // for char 8
 	vecPrim[1]= (rand()% nPrimitives) ;  // for int 32
-	
-
 	while(1){
 
 		if ( (vecPrim[0]+vecPrim[1])< nPrimitives ){
@@ -83,13 +58,9 @@ Object::Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int
 		vecPrim[0] = (rand()% nPrimitives); // for char 8
 		vecPrim[1]= (rand()% nPrimitives) ;  // for int 32
 	}
-
 	vecPrim[2] = nPrimitives - (vecPrim[0]+vecPrim[1]);  // for long 64
 	myPayoadSize = 16 + vecPrim[0]*8 + vecPrim[1]*32 + vecPrim[2]*64 + myPointersMax*8;
-
 }
-
-
 
 int Object::getID(){
 	return this->myId;
@@ -120,7 +91,6 @@ Object* Object::getReferenceTo(int pointerNumber){
 }
 
 int Object::setPointer(int pointerNumber, Object* target){
-
 	if(pointerNumber >= myPointersMax){
 		printf("No, can't do it\n");
 		fflush(stdout);
@@ -138,25 +108,24 @@ void Object::setThreadID(int tid){
 int	Object::getThreadID(){
 	return myTid;
 }
-////////////////////////////////////////////////////////////////////////////////////
 
 int Object::getFieldOffset(int index, int fieldType){
 	
 	if(fieldType == 3){
 		// return offset of the reference field
-		return 16 + vecPrim[0]*8 + vecPrim[1]*32 + vecPrim[2]*64 + 8*index;
+		return 16 + vecPrim[0]*1 + vecPrim[1]*4 + vecPrim[2]*8 + 8*index;
 	}
 	else if(fieldType == 0){
 		// return offset of char filed
-		return 16+index*8;
+		return 16+index*1;
 	}
 	else if(fieldType == 1){
 		// return offest of int field
-		return 16+ vecPrim[0]*8 + index*32;
+		return 16+ vecPrim[0]*1 + index*4;
 	}
 	else if(fieldType == 2){
 		//return offset of long field
-		return 16 + vecPrim[0]*8 + vecPrim[1]*32 + index*64;
+		return 16 + vecPrim[0]*1 + vecPrim[1]*4 + index*8;
 	}
 	else{
 		// offset of the object header
@@ -165,13 +134,13 @@ int Object::getFieldOffset(int index, int fieldType){
 }
 int Object::getFieldSize(int fieldType){
 	if (fieldType == 0){
-		return 8;
+		return 1;
 	}
 	else if(fieldType == 1){
-		return 32;
+		return 4;
 	}
 	else if(fieldType == 2){
-		return 64;
+		return 8;
 	}
 	else if(fieldType == 3){
 		return 8;
@@ -203,7 +172,7 @@ int Object::primitiveType(int primIndex){
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////////////
+
 
 
 Object::~Object() {

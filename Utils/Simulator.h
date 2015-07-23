@@ -19,43 +19,34 @@ class Simulator {
 public:
 	Simulator(char* tracepath);
 	virtual ~Simulator();
+	/* for version 0 */
 	int run(int simulationSteps);
-	/* runTracetFileGenerator() is a modified method of run() */
+	int test();
+	/* for version 3 */
 	void initializeClassTable(char* classfilename );
 	int runTraceFileGenerator(int simulationSteps);
-	int test();
+
 private:
 	int currentStep;
-
 	int stepsToGo;
 	MemoryManager* memManager;
 	void allocateRandomObject(int thread);
-	void allocationRandomObjectAARD(int thread);
 	void referenceOperation(int thread);
 	int getPartnerThread(int thread);
-
+	void readObject(int thread); // 'r'
 	
-	/*possible primitives access operations */
-
+	/*possible operations for version 3*/
+	void allocationRandomObjectAARD(int thread);
+	void addReferenceToRootset(int thread); // '+'
+	void deleteReferenceFromRootset(int thread); // '-'
+	void setReferenceToObject(int thread); // 'w'
 	void storeObjectFiledWithPrimitive(int thread);
 	void readObjectFiledWithPrimitive(int thread);
 	void readReferenceFromObject(int thread);
-
-	
-
-
-	/* possible reference operations */
-	void setReferenceToObject(int thread); // 'w'
-
-	void addReferenceToRootset(int thread); // '+'
-	void deleteReferenceFromRootset(int thread); // '-'
-
 	void setReferenceToClass(int thread); // 'c'
 	void storeClassFiledWithPrimitive(int thread);
 	void readClassFiledWithPrimitive(int thread);
 	void readReferenceFromClass(int thread);
-	void readObject(int thread); // 'r'
-
 	Logger* log;
 };
 

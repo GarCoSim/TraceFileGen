@@ -27,6 +27,20 @@ int MAXCACCESS;
 int ESCAPE_PROBABILITY;
 int ESPACE_TO_PARTNER;
 
+
+int na = 0;
+int ar = 0;
+int dr = 0;
+int sRo = 0;
+int sRc = 0;
+int sPo = 0;
+int sPc = 0;
+int rRo = 0;
+int rRc = 0;
+int rPo = 0;
+int rPc = 0;
+
+
 /*
 int main(int argc, char *argv[]) {
 	//default trace file name (and path).
@@ -189,6 +203,8 @@ int main(int argc, char *argv[]){
 		fprintf(gDetLog, "Probability of escaped object: %d\n", ESCAPE_PROBABILITY);
 		fprintf(gDetLog, "Probability of escaped to partner thread: %d\n", ESPACE_TO_PARTNER);
 
+		
+		
 	
 		Simulator* sim = new Simulator(filename);
 		if(VERSION == 0){
@@ -199,7 +215,18 @@ int main(int argc, char *argv[]){
 			sim->initializeClassTable(clsfilename);
 			sim->runTraceFileGenerator(ITERATIONS);
 		}
-
+		fprintf(gDetLog, "#allocation: %d\n", na);
+		fprintf(gDetLog, "#addRoot: %d\n", ar);
+		fprintf(gDetLog, "#deleteRoot: %d\n", dr);
+		fprintf(gDetLog, "#storeRefinObject: %d\n", sRo);
+		fprintf(gDetLog, "#storeRefinClass: %d\n", sRc);
+		fprintf(gDetLog, "#storePriminObject: %d\n", sPo);
+		fprintf(gDetLog, "#storePriminClass: %d\n", sPc);
+		fprintf(gDetLog, "#readReffromObject: %d\n", rRo);
+		fprintf(gDetLog, "#readReffromClass: %d\n", rRc);
+		fprintf(gDetLog, "#readPrimfromObject: %d\n", rPo);
+		fprintf(gDetLog, "#readPrimfromClass: %d\n", rPc);
+		fprintf(gDetLog, "Total Number of Operations: %d\n", na+ar+dr+sRo+sRc+sPo+sPc+rRo+rRc+rPo+rPc);
 		fclose(gDetLog);
 		
 	return 0;

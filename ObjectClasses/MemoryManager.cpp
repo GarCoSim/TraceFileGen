@@ -69,8 +69,6 @@ int MemoryManager::setRootPointer(int threadNumber, Object* newObject){
 	return 0;
 }
 
-
-
 int MemoryManager::allocateObjectToRootset(int size, int threadNumber,
 		int rootSetNumber, int maxPointers, int creationDate){
 	//check if you can create more objects and get a slot in object list

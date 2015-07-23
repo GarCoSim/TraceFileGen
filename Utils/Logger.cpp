@@ -9,6 +9,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+extern int na;
+extern int ar;
+extern int dr;
+extern int sRo;
+extern int sRc;
+extern int sPo;
+extern int sPc;
+extern int rRo;
+extern int rRc;
+extern int rPo;
+extern int rPc;
+
+
 namespace traceGen {
 
 Logger::Logger(char* tracepath) {
@@ -54,6 +67,7 @@ void Logger::deletefromRoot(int thread,int id){
 //			id);
 //	//fflush(stdout);
 	fprintf(trace, "- T%d O%d\n",thread,id);
+	dr++;
 }
 
 void Logger::logAllocation(int thread, int parent, int parentSlot, int id, int size, int refCount){
@@ -72,6 +86,7 @@ void Logger::logAllocation(int thread, int parent, int parentSlot, int id, int s
 			id,
 			size,
 			refCount);
+	
 //	fprintf(dot,"%d -> %d;\n", parent, id);
 }
 
@@ -89,6 +104,7 @@ void Logger::logAllocation(int thread, int id, int size, int refCount, int class
 				size,
 				refCount,
 				classID);
+	na++;
 	//	fprintf(dot,"%d -> %d;\n", parent, id);
 }
 
@@ -105,6 +121,7 @@ void Logger::logRefOperation(int thread, int parentID, int parentSlot, int child
 			parentID,
 			parentSlot,
 			childID);
+
 	//fprintf(dot,"%d -> %d;\n", parentID, childID);
 }
 
@@ -117,7 +134,7 @@ void Logger::logRefOperation(int thread, int parentID, int parentSlot, int child
 			fieldOffset,
 			fieldSize,
 			v);
-
+	sRo++;
 }
 
 
@@ -128,7 +145,7 @@ void Logger::logreadRefFromObjectOperation(int thread, int parentID, int parentS
 			parentSlot,
 			fieldSize,
 			v);
-
+	rRo++;
 }
 
 
@@ -140,6 +157,7 @@ void Logger::logstoreObjFieldWithPrimOperation(int thread, int parentID, int fie
 			fieldOffset,
 			fieldSize,
 			v);
+	sPo++;
 }
 
 
@@ -150,6 +168,7 @@ void Logger::logstoreClassFieldWithPrimOperation(int thread, int classID, int fi
 			fieldOffset,
 			fieldSize,
 			v);
+	sPc++;
 }
 
 void Logger::logreadClassFieldWithPrimOperation(int thread, int classID, int fieldOffset, int fieldSize, int v ){
@@ -159,6 +178,7 @@ void Logger::logreadClassFieldWithPrimOperation(int thread, int classID, int fie
 			fieldOffset,
 			fieldSize,
 			v);
+	rPc++;
 }
 
 
@@ -170,6 +190,7 @@ void Logger::logreadObjFieldWithPrimOperation(int thread, int parentID, int fiel
 			fieldOffset,
 			fieldSize,
 			v);
+	rPo++;
 }
 
 void Logger::logEnd(){
@@ -201,6 +222,7 @@ void Logger::logRefOperationClaasToObject(int thread, int classID, int slotOffse
 			objId,
 			fieldSize,
 			v);
+	sRc++;
 }
 void Logger::logreadRefFromClaas(int thread, int classID, int slotOffset, int fieldSize, int v){
 //	printf("c T%d C%d O%d\n",
@@ -214,6 +236,7 @@ void Logger::logreadRefFromClaas(int thread, int classID, int slotOffset, int fi
 			slotOffset,
 			fieldSize,
 			v);
+	rRc++;
 }
 
 void Logger::addToRoot(int thread,int id){
@@ -224,6 +247,7 @@ void Logger::addToRoot(int thread,int id){
 	fprintf(trace, "+ T%d O%d\n",
 			thread,
 			id);
+	ar++;
 }
 Logger::~Logger() {
 }

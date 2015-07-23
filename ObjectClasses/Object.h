@@ -18,9 +18,8 @@ class Object {
 public:
 	Object(int id, int payloadSize, int maxPointers, int dateOfCreation);
 	//constructor overloading with a new parameter classID
-	Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId);
-
-	Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId, int primField);
+	//Object(int id, int payloadSize, int maxPointers, int dateOfCreation, int classId);
+	Object(int id, int maxPointers, int dateOfCreation, int classId, int primField);
 	virtual ~Object();
 
 	int 	getID();
@@ -38,7 +37,7 @@ public:
 	int 	primitiveType(int primIndex);
 	int 	visited;
 	int 	creationDate;
-	int     vecPrim[3] ;
+	int     vecPrim[3];
 private:
 	/* thread id */
 	int myTid;
