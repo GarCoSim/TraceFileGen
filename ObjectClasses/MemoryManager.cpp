@@ -21,6 +21,7 @@
 using namespace std;
 
 extern int NUM_THREADS ;
+extern int MAX_POINTERS;
 
 FILE* classFilePointer;
 
@@ -109,30 +110,14 @@ int MemoryManager::allocateObject(int size, int maxPointers, Object* creatorObje
 	return id;
 }
 
-Object* MemoryManager::allocateObject(int size, int threadNumber, int maxPointers,int creationDate, int classID){
 
-	int objectID = nextId;
-	nextId++;
-	Object* newObject = new Object(objectID, size, maxPointers, creationDate, classID);
-	//new
+Object* MemoryManager::allocateObjectNew(int threadNumber, int maxPointers,int creationDate, int classID, int primField){
+	/* nextId is the current id of an object */
+	Object* newObject = new Object(nextId, maxPointers, creationDate, classID, primField);
 	newObject->setThreadID(threadNumber);
+	nextId++;
 	return newObject;
 }
-
-
-
-Object* MemoryManager::allocateObject(int size, int threadNumber, int maxPointers,int creationDate, int classID, int primField){
-
-	int objectID = nextId;
-	nextId++;
-	Object* newObject = new Object(objectID, size, maxPointers, creationDate, classID, primField);
-	//new
-	newObject->setThreadID(threadNumber);
-	return newObject;
-}
-
-
-
 
 int MemoryManager::setPointer(Object* startObject, int pointerIndex, Object* targetObject){
 	return startObject->setPointer(pointerIndex,targetObject);

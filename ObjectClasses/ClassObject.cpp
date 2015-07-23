@@ -15,6 +15,8 @@
 
 using namespace std;
 
+extern int MAX_PRIMITIVES;	
+
 namespace traceGen {
 
 ClassObject::ClassObject(int classId, string clsName, int staticReference) {
@@ -48,19 +50,19 @@ ClassObject::ClassObject(int classId, string clsName, int staticReference) {
 int ClassObject::getFieldOffset(int index, int fieldType){
 	if(fieldType == 3){
 		// return offset of the reference field
-		return 16 + countFieldType[0]*8 + countFieldType[1]*32 + countFieldType[2]*64 + 8*index;
+		return 16 + countFieldType[0]*1 + countFieldType[1]*4 + countFieldType[2]*8 + 8*index;
 	}
 	else if(fieldType == 0){
 		// return offset of char filed
-		return 16+index*8;
+		return 16+index*1;
 	}
 	else if(fieldType == 1){
 		// return offest of int field
-		return 16+ countFieldType[0]*8 + index*32;
+		return 16+ countFieldType[0]*1 + index*4;
 	}
 	else if(fieldType == 2){
 		//return offset of long field
-		return 16 + countFieldType[0]*8 + countFieldType[1]*32 + index*64;
+		return 16 + countFieldType[0]*1 + countFieldType[1]*4 + index*8;
 	}
 	else{
 		// offset of the object header
@@ -70,13 +72,13 @@ int ClassObject::getFieldOffset(int index, int fieldType){
 
 int ClassObject::getFieldSize(int fieldType){
 	if (fieldType == 0){
-		return 8;
+		return 1;
 	}
 	else if(fieldType == 1){
-		return 32;
+		return 4;
 	}
 	else if(fieldType == 2){
-		return 64;
+		return 8;
 	}
 	else if(fieldType == 3){
 		return 8;
