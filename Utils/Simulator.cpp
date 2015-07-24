@@ -30,17 +30,6 @@ extern int ESCAPE_PROBABILITY;
 extern int ESPACE_TO_PARTNER;
 
 
-extern int na;
-extern int ar;
-extern int dr;
-extern int sRo;
-extern int sRc;
-extern int sPo;
-extern int sPc;
-extern int rRo;
-extern int rRc;
-extern int rPo;
-extern int rPc;
 
 
 
@@ -278,9 +267,11 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 
 	stepsToGo = simulationSteps;
 	currentStep = simulationSteps;
-
+	bool operationdone = false;
 	while(currentStep > 0){
-		currentStep--;
+		if(operationdone){
+			currentStep--;
+		}
 		//print indicator showing the progress every 10000 iterations.
 		if(currentStep%10000==0){
 			printf("%f percent done.\n",(stepsToGo-currentStep)/(float)stepsToGo*100);
@@ -297,7 +288,7 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 		//printf("i=%d j=%d k=%d l=%d x=%d\n", i,j,k,l,x);
 		if( (0 <= x)&&(x <= i) ){
 			//printf( "Select Allocation....\n");
-			allocationRandomObjectAARD(thread);
+			operationdone = allocationRandomObjectAARD(thread);
 		}
 		else if( ( i < x) && (x <= j) ){
 			//printf( "Select Store....\n");
@@ -305,19 +296,19 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 			int storeInObject = rand()%100;
 			if(doStore <  PRIMITIVE_FIELD_ACCESS ){
 				if(storeInObject > STATIC_FIELD_ACCESS){
-					storeObjectFiledWithPrimitive(thread);
+					operationdone = storeObjectFiledWithPrimitive(thread);
 				}
 				else{
-					storeClassFiledWithPrimitive(thread);
+					operationdone = storeClassFiledWithPrimitive(thread);
 				}
 			}
 			else{
 				if(storeInObject > STATIC_FIELD_ACCESS){
 
-					setReferenceToObject(thread);
+					operationdone = setReferenceToObject(thread);
 				}
 				else{
-					setReferenceToClass(thread);
+					operationdone = setReferenceToClass(thread);
 				}
 			}
 		}
@@ -327,18 +318,18 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 			int readFromObject = rand()%100;
 			if(doRead< PRIMITIVE_FIELD_ACCESS ){
 				if(readFromObject > STATIC_FIELD_ACCESS){
-					readObjectFiledWithPrimitive(thread);
+					operationdone = readObjectFiledWithPrimitive(thread);
 				}
 				else{
-					readClassFiledWithPrimitive(thread);
+					operationdone = readClassFiledWithPrimitive(thread);
 				}
 			}
 			else{
 				if(readFromObject > STATIC_FIELD_ACCESS){
-					readReferenceFromObject(thread);
+					operationdone = readReferenceFromObject(thread);
 				}
 				else{
-					readReferenceFromClass(thread);
+					operationdone = readReferenceFromClass(thread);
 				}
 			}
 		}
@@ -348,11 +339,11 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 			
 			if(addDel>50){
 				//add the pointer of an existing object to the root set of either the same thread or other thread
-				addReferenceToRootset(thread);
+				operationdone = addReferenceToRootset(thread);
 			}
 			else{
 				//delete the pointer of an existing object from the root set
-				deleteReferenceFromRootset(thread);
+				operationdone = deleteReferenceFromRootset(thread);
 			}
 		}
 		else{
@@ -364,7 +355,7 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 }
 
 
-void Simulator::allocationRandomObjectAARD(int thread){
+bool Simulator::allocationRandomObjectAARD(int thread){
 	
 	int outGoingRefsMax = (rand() % MAX_POINTERS) + 1;
 	int primitiveField = (rand() % MAX_PRIMITIVES) +1;
@@ -418,7 +409,7 @@ void Simulator::allocationRandomObjectAARD(int thread){
 			while(child){
 				if(child->visited == 1){
 					// this means that I might fall into a loop
-					return;
+					return true;
 				}else{
 					child->visited = 1;
 				}
@@ -443,10 +434,10 @@ void Simulator::allocationRandomObjectAARD(int thread){
 			
 		}
 	}
-
+	return true;
 }
 
-void Simulator::addReferenceToRootset(int thread){
+bool Simulator::addReferenceToRootset(int thread){
 
 	int targetThread;
 	int rootSetSize = memManager->getRootsetSize(thread);
@@ -455,7 +446,7 @@ void Simulator::addReferenceToRootset(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 
 	Object* object = memManager->getRoot(thread, rootSlotNumber);
@@ -488,15 +479,16 @@ void Simulator::addReferenceToRootset(int thread){
 	}
 	if(memManager->getRootsetSize(targetThread) && memManager->isObjectInRoot(targetThread, object)){
 		// object already exists in root set;
-		return;
+		return false;
 	}
 	
 	if( !memManager->addExObjectToRootset(object, targetThread)){
 		log->addToRoot(targetThread, object->getID());
 	}
+	return true;
 }
 
-void Simulator::storeObjectFiledWithPrimitive(int thread){
+bool Simulator::storeObjectFiledWithPrimitive(int thread){
 
 	int rootSetSize = memManager->getRootsetSize(thread);
 	int rootSlotNumber;
@@ -505,7 +497,7 @@ void Simulator::storeObjectFiledWithPrimitive(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 	Object* temp;
 	Object* parent = memManager->getRoot(thread, rootSlotNumber);
@@ -523,15 +515,15 @@ void Simulator::storeObjectFiledWithPrimitive(int thread){
 		}
 	}
 	int primIndex = rand() % parent->getNumOfPrimField();
-	int primType = parent->primitiveType(primIndex); //rand()%3; // wrong
+	int primType = parent->primitiveType(primIndex); //rand()%3; 
 
 	log->logstoreObjFieldWithPrimOperation(thread, parent->getID(), parent->getFieldOffset(primIndex, primType), parent->getFieldSize(primType), (int)rand()%2 );
-
+	return true;
 }
 
 
 
-void Simulator::readObjectFiledWithPrimitive(int thread){
+bool Simulator::readObjectFiledWithPrimitive(int thread){
 
 	int rootSetSize = memManager->getRootsetSize(thread);
 	int rootSlotNumber;
@@ -540,7 +532,7 @@ void Simulator::readObjectFiledWithPrimitive(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 	Object* temp;
 	Object* parent = memManager->getRoot(thread, rootSlotNumber);
@@ -561,11 +553,11 @@ void Simulator::readObjectFiledWithPrimitive(int thread){
 	//int primType = rand()%3; // wrong
 	int primType = parent->primitiveType(primIndex);
 	log->logreadObjFieldWithPrimOperation(thread, parent->getID(), parent->getFieldOffset(primIndex, primType), parent->getFieldSize(primType), (int)rand()%2 );
-
+	return true;
 }
 
 
-void Simulator::setReferenceToObject(int thread){
+bool Simulator::setReferenceToObject(int thread){
 	int targetThread;
 	int rootSetSize = memManager->getRootsetSize(thread);
 	int rootSlotNumber;
@@ -574,7 +566,7 @@ void Simulator::setReferenceToObject(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 
 	// most reference operations will be performed within the thread.
@@ -616,7 +608,7 @@ void Simulator::setReferenceToObject(int thread){
 		slotNumber = rand() % (childRootSetSize);
 	}else{
 		//printf("No object created for the targetThread\n");
-		return;
+		return false;
 	}
 	memManager->setupObjects();
 	Object* child = memManager->getRoot(targetThread, slotNumber);
@@ -625,7 +617,7 @@ void Simulator::setReferenceToObject(int thread){
 		child = temp;
 		if(child->visited == 1){
 			// this means that I might fall into a loop
-			return;
+			return false;
 		}
 		else{
 			child->visited = 1;
@@ -645,11 +637,15 @@ void Simulator::setReferenceToObject(int thread){
 		//log->logRefOperation(thread,parent->getID(),slotNumber,child->getID());
 		
 		log->logRefOperation(thread,parent->getID(),slotNumber,child->getID(),  parent->getFieldOffset(slotNumber, REFTYPE), (int)8, (int)rand()%2 );
+		return true;
+	}
+	else{
+		return false;
 	}
 }
 
 
-void Simulator::readReferenceFromObject(int thread){
+bool Simulator::readReferenceFromObject(int thread){
 	int targetThread;
 	int rootSetSize = memManager->getRootsetSize(thread);
 	int rootSlotNumber;
@@ -658,7 +654,7 @@ void Simulator::readReferenceFromObject(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 
 	Object* temp;
@@ -697,11 +693,15 @@ void Simulator::readReferenceFromObject(int thread){
 	}
 	if(temp){
 		log->logreadRefFromObjectOperation(thread,parent->getID(), slotNumber, (int)8, (int)rand()%2 );
+		return true;
+	}
+	else{
+		return false;
 	}
 
 }
 
-void Simulator::deleteReferenceFromRootset(int thread){
+bool Simulator::deleteReferenceFromRootset(int thread){
 	int rootSetSize = memManager->getRootsetSize(thread);
 	int rootSlotNumber;
 
@@ -709,15 +709,16 @@ void Simulator::deleteReferenceFromRootset(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 	Object* obj = memManager->getRoot(thread, rootSlotNumber);
 	//printf("Obj id: %d\n", obj->getID());
 	memManager->deleteFromRootset(thread, rootSlotNumber);
 	log->deletefromRoot(thread, obj->getID());
+	return true;
 }
 
-void Simulator::setReferenceToClass(int thread){
+bool Simulator::setReferenceToClass(int thread){
 
 	int targetThread;
 	int rootSetSize = memManager->getRootsetSize(thread);
@@ -727,7 +728,7 @@ void Simulator::setReferenceToClass(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 	// most reference operations will be performed within the thread.
 	// escaping object are less likely;
@@ -770,11 +771,15 @@ void Simulator::setReferenceToClass(int thread){
 		int slotNumber = rand()% clsObj->getStaticRefCount();
 		clsObj->setReference(slotNumber, parent);
 		log->logRefOperationClaasToObject(thread, clsObj->getId(), clsObj->getFieldOffset(slotNumber, REFTYPE), parent->getID(), (int)8, (int)rand()%2);
+		return true;
+	}
+	else{
+		return false;
 	}
 
 }
 
-void Simulator::readReferenceFromClass(int thread){
+bool Simulator::readReferenceFromClass(int thread){
 
 	int targetThread;
 	int rootSetSize = memManager->getRootsetSize(thread);
@@ -784,7 +789,7 @@ void Simulator::readReferenceFromClass(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 	// most reference operations will be performed within the thread.
 	// escaping object are less likely;
@@ -828,12 +833,14 @@ void Simulator::readReferenceFromClass(int thread){
 		int slotNumber = clsObj->getReferenceSlot();
 		if(slotNumber >= 0){
 			log->logreadRefFromClaas(thread, clsObj->getId(), clsObj->getFieldOffset(slotNumber, REFTYPE), (int)8, (int)rand()%2);
+			return true;
 		}
 	}
+	return false;
 }
 
 
-void Simulator::storeClassFiledWithPrimitive(int thread){
+bool Simulator::storeClassFiledWithPrimitive(int thread){
 
 	int rootSetSize = memManager->getRootsetSize(thread);
 	int rootSlotNumber;
@@ -842,7 +849,7 @@ void Simulator::storeClassFiledWithPrimitive(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 	Object* temp;
 	Object* parent = memManager->getRoot(thread, rootSlotNumber);
@@ -866,9 +873,10 @@ void Simulator::storeClassFiledWithPrimitive(int thread){
 	int primIndex = rand() % clsObj->getNumPrimitives();
 	int primType = clsObj->primitiveType(primIndex);
 	log->logstoreClassFieldWithPrimOperation(thread, clsObj->getId(), clsObj->getFieldOffset(primIndex, primType), clsObj->getFieldSize(primType), (int)rand()%2 );
+	return true;
 }
 
-void Simulator::readClassFiledWithPrimitive(int thread){
+bool Simulator::readClassFiledWithPrimitive(int thread){
 
 	int rootSetSize = memManager->getRootsetSize(thread);
 	int rootSlotNumber;
@@ -877,7 +885,7 @@ void Simulator::readClassFiledWithPrimitive(int thread){
 		rootSlotNumber = rand() % (rootSetSize);
 	}else{
 		//printf("No object created for this thread\n");
-		return;
+		return false;
 	}
 	Object* temp;
 	Object* parent = memManager->getRoot(thread, rootSlotNumber);
@@ -901,6 +909,7 @@ void Simulator::readClassFiledWithPrimitive(int thread){
 	int primIndex = rand() % clsObj->getNumPrimitives();
 	int primType = clsObj->primitiveType(primIndex);
 	log->logreadClassFieldWithPrimOperation(thread, clsObj->getId(), clsObj->getFieldOffset(primIndex, primType), clsObj->getFieldSize(primType), (int)rand()%2 );
+	return true;
 }
 
 Simulator::~Simulator() {

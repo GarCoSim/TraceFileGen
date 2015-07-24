@@ -36,17 +36,17 @@ private:
 	void readObject(int thread); // 'r'
 	
 	/*possible operations for version 3*/
-	void allocationRandomObjectAARD(int thread);
-	void addReferenceToRootset(int thread); // '+'
-	void deleteReferenceFromRootset(int thread); // '-'
-	void setReferenceToObject(int thread); // 'w'
-	void storeObjectFiledWithPrimitive(int thread);
-	void readObjectFiledWithPrimitive(int thread);
-	void readReferenceFromObject(int thread);
-	void setReferenceToClass(int thread); // 'c'
-	void storeClassFiledWithPrimitive(int thread);
-	void readClassFiledWithPrimitive(int thread);
-	void readReferenceFromClass(int thread);
+	bool allocationRandomObjectAARD(int thread);
+	bool addReferenceToRootset(int thread); // '+'
+	bool deleteReferenceFromRootset(int thread); // '-'
+	bool setReferenceToObject(int thread); // 'w'
+	bool storeObjectFiledWithPrimitive(int thread);
+	bool readObjectFiledWithPrimitive(int thread);
+	bool readReferenceFromObject(int thread);
+	bool setReferenceToClass(int thread); // 'c'
+	bool storeClassFiledWithPrimitive(int thread);
+	bool readClassFiledWithPrimitive(int thread);
+	bool readReferenceFromClass(int thread);
 	Logger* log;
 };
 
