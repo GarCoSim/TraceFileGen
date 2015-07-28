@@ -148,11 +148,14 @@ int main(int argc, char *argv[]){
 	}
 
 		fprintf(stderr, "TraceFileGenerator v-%d\n\n", VERSION);
-		gDetLog = fopen("detailed.log","w+");
+		
 
 		char *filename  = argv[1];
 		char *clsfilename =  argv[2];
-
+		char logFile[100];
+		strcpy(logFile, argv[1]);
+		strcat(logFile, ".log");
+		gDetLog = fopen(logFile,"w+");
 
 		 int ITERATIONS = setArgs(argc, argv, "--iteration",  "-i");
 		 NUM_THREADS      = setArgs(argc, argv, "--thread",  "-t");

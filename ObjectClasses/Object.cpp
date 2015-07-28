@@ -59,7 +59,7 @@ Object::Object(int id, int maxPointers, int dateOfCreation, int classId, int pri
 		vecPrim[1]= (rand()% nPrimitives) ;  // for int 32
 	}
 	vecPrim[2] = nPrimitives - (vecPrim[0]+vecPrim[1]);  // for long 64
-	myPayoadSize = 16 + vecPrim[0]*8 + vecPrim[1]*32 + vecPrim[2]*64 + myPointersMax*8;
+	myPayoadSize = 16 + vecPrim[0]*1 + vecPrim[1]*4 + vecPrim[2]*8 + myPointersMax*8;
 }
 
 int Object::getID(){

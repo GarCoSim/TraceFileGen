@@ -337,7 +337,7 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 			//printf( "Select Add/DeleteRootset....\n");
 			int addDel = rand() % 100;
 			
-			if(addDel>50){
+			if(addDel>30){
 				//add the pointer of an existing object to the root set of either the same thread or other thread
 				operationdone = addReferenceToRootset(thread);
 			}
