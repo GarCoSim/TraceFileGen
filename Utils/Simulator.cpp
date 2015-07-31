@@ -269,9 +269,9 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 	currentStep = simulationSteps;
 	bool operationdone = false;
 	while(currentStep > 0){
-		if(operationdone){
-			currentStep--;
-		}
+		//if(operationdone){
+		//	currentStep--;
+		//}
 		//print indicator showing the progress every 10000 iterations.
 		if(currentStep%10000==0){
 			printf("%f percent done.\n",(stepsToGo-currentStep)/(float)stepsToGo*100);
@@ -382,9 +382,9 @@ bool Simulator::allocationRandomObjectAARD(int thread){
 	memManager->addObjectToRootset(newObject, thread);
 
 	log->logAllocation(thread, newObject->getID(), newObject->getPayloadSize(), outGoingRefsMax, clsObj->getId());
-	
+	currentStep--;
 	log->addToRoot(thread, newObject->getID());
-	
+	currentStep--;
 
 	// according to Gerhard
 	/* allocation operations:
@@ -434,12 +434,13 @@ bool Simulator::allocationRandomObjectAARD(int thread){
 				
 				//log->logRefOperation(thread,parent->getID(),rnd, newObject->getID());
 				log->logRefOperation(thread,parent->getID(),rnd, newObject->getID(), parent->getFieldOffset(rnd, REFTYPE), (int)8, (int)rand()%2 );
-				
+				currentStep--;
 
 				// delete the pointer of the newObject from the root set;
 				// newObject was actually added to the end of the rooset, so it can be deleted from the last
 				memManager->deleteEndFromRootset(thread);
 				log->deletefromRoot(thread, newObject->getID());
+				currentStep--;
 			}
 		}
 	}
@@ -494,6 +495,7 @@ bool Simulator::addReferenceToRootset(int thread){
 	
 	if( !memManager->addExObjectToRootset(object, targetThread)){
 		log->addToRoot(targetThread, object->getID());
+		currentStep--;
 	}
 	return true;
 }
@@ -528,6 +530,7 @@ bool Simulator::storeObjectFiledWithPrimitive(int thread){
 	int primType = parent->primitiveType(primIndex); //rand()%3; 
 
 	log->logstoreObjFieldWithPrimOperation(thread, parent->getID(), parent->getFieldOffset(primIndex, primType), parent->getFieldSize(primType), (int)rand()%2 );
+	currentStep--;
 	return true;
 }
 
@@ -563,6 +566,7 @@ bool Simulator::readObjectFiledWithPrimitive(int thread){
 	//int primType = rand()%3; // wrong
 	int primType = parent->primitiveType(primIndex);
 	log->logreadObjFieldWithPrimOperation(thread, parent->getID(), parent->getFieldOffset(primIndex, primType), parent->getFieldSize(primType), (int)rand()%2 );
+	currentStep--;
 	return true;
 }
 
@@ -651,6 +655,7 @@ bool Simulator::setReferenceToObject(int thread){
 		//log->logRefOperation(thread,parent->getID(),slotNumber,child->getID());
 		
 		log->logRefOperation(thread,parent->getID(),slotNumber,child->getID(),  parent->getFieldOffset(slotNumber, REFTYPE), (int)8, (int)rand()%2 );
+		currentStep--;
 		return true;
 	}
 	else{
@@ -707,6 +712,7 @@ bool Simulator::readReferenceFromObject(int thread){
 	}
 	if(temp){
 		log->logreadRefFromObjectOperation(thread,parent->getID(), slotNumber, (int)8, (int)rand()%2 );
+		currentStep--;
 		return true;
 	}
 	else{
@@ -729,6 +735,7 @@ bool Simulator::deleteReferenceFromRootset(int thread){
 	//printf("Obj id: %d\n", obj->getID());
 	memManager->deleteFromRootset(thread, rootSlotNumber);
 	log->deletefromRoot(thread, obj->getID());
+	currentStep--;
 	return true;
 }
 
@@ -785,6 +792,7 @@ bool Simulator::setReferenceToClass(int thread){
 		int slotNumber = rand()% clsObj->getStaticRefCount();
 		clsObj->setReference(slotNumber, parent);
 		log->logRefOperationClaasToObject(thread, clsObj->getId(), clsObj->getFieldOffset(slotNumber, REFTYPE), parent->getID(), (int)8, (int)rand()%2);
+		currentStep--;
 		return true;
 	}
 	else{
@@ -847,6 +855,7 @@ bool Simulator::readReferenceFromClass(int thread){
 		int slotNumber = clsObj->getReferenceSlot();
 		if(slotNumber >= 0){
 			log->logreadRefFromClaas(thread, clsObj->getId(), clsObj->getFieldOffset(slotNumber, REFTYPE), (int)8, (int)rand()%2);
+			currentStep--;
 			return true;
 		}
 	}
@@ -887,6 +896,7 @@ bool Simulator::storeClassFiledWithPrimitive(int thread){
 	int primIndex = rand() % clsObj->getNumPrimitives();
 	int primType = clsObj->primitiveType(primIndex);
 	log->logstoreClassFieldWithPrimOperation(thread, clsObj->getId(), clsObj->getFieldOffset(primIndex, primType), clsObj->getFieldSize(primType), (int)rand()%2 );
+	currentStep--;
 	return true;
 }
 
@@ -923,6 +933,7 @@ bool Simulator::readClassFiledWithPrimitive(int thread){
 	int primIndex = rand() % clsObj->getNumPrimitives();
 	int primType = clsObj->primitiveType(primIndex);
 	log->logreadClassFieldWithPrimOperation(thread, clsObj->getId(), clsObj->getFieldOffset(primIndex, primType), clsObj->getFieldSize(primType), (int)rand()%2 );
+	currentStep--;
 	return true;
 }
 
