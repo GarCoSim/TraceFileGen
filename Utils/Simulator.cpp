@@ -336,7 +336,6 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 		else if( ( k< x) && ( x <= l) ){
 			//printf( "Select Add/DeleteRootset....\n");
 			int addDel = rand() % 100;
-			
 			if(addDel>30){
 				//add the pointer of an existing object to the root set of either the same thread or other thread
 				operationdone = addReferenceToRootset(thread);
@@ -392,48 +391,59 @@ bool Simulator::allocationRandomObjectAARD(int thread){
 	* 10% ('allocate' followed by 'add' to root set) and
 	* 90% ('allocate' followed by 'add' to root set and if possible ( 'reference' to the other object followed by 'delete' from root set)
 	*/
+
 	int doReference = rand()%100;
 	if(doReference < RATIO_ALLOCATION){
 		// to reference operation, rootset must contain object(s)
 		if(rootsetSize){
 			int rnd, rootSlotNumber;
 			rootSlotNumber = rand() % rootsetSize;
-			memManager->setupObjects();
-			int createRoot = 1; // that means there exists at the root set;
+			// Actually it is possible to have a circle in graph 
+			//memManager->setupObjects();
+
+			//int createRoot = 1; // that means there exists at the root set;
 
 			Object* child;
 			Object* parent;
 
 			child = memManager->getRoot(thread, rootSlotNumber);
+			parent = child;
 			// how here find an object randomly from the tree
 			while(child){
-				if(child->visited == 1){
-					// this means that I might fall into a loop
-					return true;
-				}else{
-					child->visited = 1;
-				}
+				
+				//if(child->visited == 1){
+				//	// this means that I might fall into a loop
+				//	return true;
+				//}else{
+				//	child->visited = 1;
+				//}
 				parent = child;
-				createRoot++;
+				//createRoot++;
+				//printf("I am here in loop %d\n", createRoot);
 				rnd = rand() % parent->getPointersMax();
 				child = parent->getReferenceTo(rnd);
+				cnt = rand() % 100;
+				if(cnt < 30){
+					break;
+				}
 			}
+			if(parent != NULL){
+				// do reference operation; just set pointer parent to child
+				memManager->setPointer(parent,rnd, newObject);
+				//int fieldIndex = rand()%outGoingRefsMax;
+				
+				//log->logRefOperation(thread,parent->getID(),rnd, newObject->getID());
+				log->logRefOperation(thread,parent->getID(),rnd, newObject->getID(), parent->getFieldOffset(rnd, REFTYPE), (int)8, (int)rand()%2 );
+				
 
-			// do reference operation; just set pointer parent to child
-			memManager->setPointer(parent,rnd, newObject);
-			//int fieldIndex = rand()%outGoingRefsMax;
-			
-			//log->logRefOperation(thread,parent->getID(),rnd, newObject->getID());
-			log->logRefOperation(thread,parent->getID(),rnd, newObject->getID(), parent->getFieldOffset(rnd, REFTYPE), (int)8, (int)rand()%2 );
-			
-
-			// delete the pointer of the newObject from the root set;
-			// newObject was actually added to the end of the rooset, so it can be deleted from the last
-			memManager->deleteEndFromRootset(thread);
-			log->deletefromRoot(thread, newObject->getID());
-			
+				// delete the pointer of the newObject from the root set;
+				// newObject was actually added to the end of the rooset, so it can be deleted from the last
+				memManager->deleteEndFromRootset(thread);
+				log->deletefromRoot(thread, newObject->getID());
+			}
 		}
 	}
+
 	return true;
 }
 
@@ -610,18 +620,22 @@ bool Simulator::setReferenceToObject(int thread){
 		//printf("No object created for the targetThread\n");
 		return false;
 	}
-	memManager->setupObjects();
+	
+	/* Actually there might have cycles */
+	//memManager->setupObjects();
+
 	Object* child = memManager->getRoot(targetThread, slotNumber);
 	temp = child;
 	while(temp){
 		child = temp;
+		/*
 		if(child->visited == 1){
 			// this means that I might fall into a loop
 			return false;
 		}
 		else{
 			child->visited = 1;
-		}
+		}*/
 		rnd = rand() % child->getPointersMax();
 		temp = child->getReferenceTo(rnd);
 		rnd = rand() % 100;

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <sys/time.h>
 #include "defines.h"
 #include "ObjectClasses/MemoryManager.h"
 #include "Utils/Simulator.h"
@@ -123,6 +124,17 @@ int setArgs(int argc, char *argv[], const char *option, const char *shortOption)
 }
 
 int main(int argc, char *argv[]){
+
+
+	struct timeval tv;
+	unsigned long time_start,ts;
+	float time;
+
+
+	gettimeofday(&tv, NULL);
+	time_start = 1000000*tv.tv_sec+tv.tv_usec;
+
+
 	
 	if(argc < 3) {
 		fprintf(stderr, "Usage: TraceFileGenerator traceFile [OPTIONS]\n" \
@@ -185,7 +197,7 @@ int main(int argc, char *argv[]){
 		STATIC_FIELD_ACCESS = STATIC_FIELD_ACCESS <0 ? 30 : STATIC_FIELD_ACCESS;
 		PRIMITIVE_FIELD_ACCESS = PRIMITIVE_FIELD_ACCESS <0 ? 70 : PRIMITIVE_FIELD_ACCESS;
 		MAXCACCESS = MAXCACCESS <0 ? 300 : MAXCACCESS;
-		ESCAPE_PROBABILITY   = ESCAPE_PROBABILITY <0 ? 5 : ESCAPE_PROBABILITY;
+		ESCAPE_PROBABILITY   = ESCAPE_PROBABILITY <0 ? 7 : ESCAPE_PROBABILITY;
 		ESPACE_TO_PARTNER   = ESPACE_TO_PARTNER <0 ? 90 : ESPACE_TO_PARTNER;
 
 		
@@ -231,6 +243,11 @@ int main(int argc, char *argv[]){
 		fprintf(gDetLog, "#readPrimfromClass: %d\n", rPc);
 		fprintf(gDetLog, "Total Number of Operations: %d\n", na+ar+dr+sRo+sRc+sPo+sPc+rRo+rRc+rPo+rPc);
 		fclose(gDetLog);
+
+
+		gettimeofday(&tv, NULL);
+		time = ((1000000*tv.tv_sec+tv.tv_usec) - time_start)/1.0e6;
+  		printf("Wallclock time: %f\n", time);
 		
 	return 0;
 }
