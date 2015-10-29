@@ -58,11 +58,10 @@ TraceFileGen can be downloaded from https://github.com/GarCoSim/TraceFileGen
   * $ make
   
 # Running (targetGen - the executatble in the build folder)
-Usage: At least two argumets must be provided to run targetGen
-* The name of trace file to be generated ( such as traceFile.trace)
-* The name of class list file to be generated (such traceFile.cls)
+Usage: At least one argumet must be provided to run targetGen
+* The name of trace file to be generated ( such as traceFile)
 
-Example: $./targetGen traceFile.trace traceFile.cls
+Example: $./targetGen traceFile
 
 <u>Options:</u>
 <table class="" cellspacing=0 border=1>
@@ -235,3 +234,9 @@ Example: $./targetGen traceFile.trace traceFile.cls
                 </tbody>
             </table>
 
+# Output (After after running)
+	It will generate three files
+	* *.trace --- containing a sequence of memory management operations 
+	* *.cls   --- containing a lists of classes
+	* *.log   --- containing statistical data
+	
