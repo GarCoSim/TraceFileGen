@@ -29,6 +29,12 @@ int ESCAPE_PROBABILITY;
 int ESPACE_TO_PARTNER;
 
 
+double maxWeight; // = 25.0;
+int constantValue; // = 10;
+double maxFrequency; // = 25.0;
+double slop; //  = 0.5;
+
+
 int na = 0;
 int ar = 0;
 int dr = 0;
@@ -114,6 +120,23 @@ int setArgs(int argc, char *argv[], const char *option, const char *shortOption)
 			else if (!strcmp(option, "--esctopartner") || !strcmp(shortOption, "-etp")) {
 					return atoi(argv[i + 1]);
 			}
+
+			else if (!strcmp(option, "--maxWeight") || !strcmp(shortOption, "-maxW")) {
+					return atoi(argv[i + 1]);
+			}
+
+			else if (!strcmp(option, "--maxFrequency") || !strcmp(shortOption, "-maxF")) {
+					return atoi(argv[i + 1]);
+			}
+
+			else if (!strcmp(option, "--constantValue") || !strcmp(shortOption, "-cvalue")) {
+					return atoi(argv[i + 1]);
+			}
+
+			else if (!strcmp(option, "--slop") || !strcmp(shortOption, "-slp")) {
+					return atoi(argv[i + 1]);
+			}
+
 			else{
 				fprintf(stderr, "Some options have been set by default\n");
 				return -1;
@@ -136,10 +159,9 @@ int main(int argc, char *argv[]){
 
 
 	
-	if(argc < 3) {
+	if(argc < 2) {
 		fprintf(stderr, "Usage: TraceFileGenerator traceFile [OPTIONS]\n" \
-						"  The name of trace file (as traceFile.trace)\n" \
-						"  The name of class list file (as traceFile.cls)\n" \
+						"  The name of trace file (as traceFile)\n" \
 						"Options:\n" \
 						"  --iteration x, -i x       uses x number as the number of iterations (default: 100)\n" \
 						"  --thread x, -t x          uses x number as the number of threads (default: 10)\n" \
@@ -147,14 +169,19 @@ int main(int argc, char *argv[]){
 						"  --pointers x, -p x        uses x number as the maximum number of pointer fields in objects/static pointer fileds in classes (default: 10)\n" \
 						"  --primitives x, -pm x     uses x number as the maximum number of primitive fields in objects/static primitive fileds in classes (default: 6)\n" \
 						"  --allocation x, -a x      uses x percent as the allocation (default: 2)\n" \
-						"  --storeaccess x, -s x     uses x percent as the store (default: 10)\n" \
+						"  --storeaccess x, -s x     uses x percent as the store (default: 11)\n" \
 						"  --readaccess x, -r x      uses x percent as the read (default: 88)\n" \
-						"  --deleteroot x, -r x      uses x percent as the rootdelete (default: 10)\n" \
-						"  --static x, -sf x         uses x percent as the static filed access (default: 30)\n" \
-						"  --prifaccess x, -pfa x    uses x percent as the primitive filed access (default: 70)\n" \
+						"  --deleteroot x, -d x      uses x percent as the rootdelete (default: 10)\n" \
+						"  --static x, -sf x         uses x percent as the static field access (default: 30)\n" \
+						"  --prifaccess x, -pfa x    uses x percent as the primitive field access (default: 70)\n" \
 						"  --classaccess x, -ca x    uses x number as the maximum used a cleass to create objects (default: 300)\n" \
-						"  --escape x, -e x          uses x probability as the an object to be escaped (default: 20)\n" \
+						"  --escape x, -e x          uses x probability as the an object to be escaped (default: 12)\n" \
 						"  --esctopartner x, -etp x  uses x probability as an object to be escaped to partner thread (default: 90)\n" \
+						"  -- maxWeight x, -maxW x   uses x maximum weight of a class (default: 25)\n" \
+						"  -- maxFrequency x, -maxF x   uses x maximum frequency of a class in object allocation (default: 25)\n" \
+						"  --constantValue x, -cvalue x  uses x constant for a where {y = ab^x} (default: 10)\n" \
+						"  --slop x, -slp x  uses x tangent of a line value between 0 t0 1 (default: b=.5)\n" \
+
 						);
 		exit(1);
 	}
@@ -162,8 +189,14 @@ int main(int argc, char *argv[]){
 		fprintf(stderr, "TraceFileGenerator v-%d\n\n", VERSION);
 		
 
-		char *filename  = argv[1];
-		char *clsfilename =  argv[2];
+		char filename[100];
+		strcpy(filename, argv[1]);
+		strcat(filename, ".trace");
+		
+		char clsfilename[100];
+		strcpy(clsfilename, argv[1]);
+		strcat(clsfilename, ".cls");
+
 		char logFile[100];
 		strcpy(logFile, argv[1]);
 		strcat(logFile, ".log");
@@ -184,6 +217,15 @@ int main(int argc, char *argv[]){
 		 ESCAPE_PROBABILITY      = setArgs(argc, argv, "--escape",  "-e");
 		 ESPACE_TO_PARTNER      = setArgs(argc, argv, "--esctopartner",  "-etp");
 
+
+
+		 maxWeight = setArgs(argc, argv, "--maxWeight",  "-maxW");
+		 maxFrequency = setArgs(argc, argv, "--maxFrequency",  "-maxF");
+		 constantValue = setArgs(argc, argv, "--constantValue",  "-cvalue");
+		 slop = setArgs(argc, argv, "--slop",  "-slp");
+
+
+
 		// set default values
 		ITERATIONS = ITERATIONS <0 ? 100 : ITERATIONS;
 		NUM_THREADS   = NUM_THREADS <0 ? 10 : NUM_THREADS;
@@ -193,12 +235,18 @@ int main(int argc, char *argv[]){
 		RATIO_ALLOC_SET = RATIO_ALLOC_SET <0 ? 2 : RATIO_ALLOC_SET;
 		RATIO_READ_ACCESS = RATIO_READ_ACCESS < 0 ? 80-RATIO_ALLOC_SET : RATIO_READ_ACCESS;
 		RATIO_STORE_ACCESS = RATIO_STORE_ACCESS <0 ? 10 : RATIO_STORE_ACCESS;
-		ROOT_DELETE_PROBABILITY = ROOT_DELETE_PROBABILITY <0 ? 8 : ROOT_DELETE_PROBABILITY;
+		ROOT_DELETE_PROBABILITY = ROOT_DELETE_PROBABILITY <0 ? 11 : ROOT_DELETE_PROBABILITY;
 		STATIC_FIELD_ACCESS = STATIC_FIELD_ACCESS <0 ? 30 : STATIC_FIELD_ACCESS;
 		PRIMITIVE_FIELD_ACCESS = PRIMITIVE_FIELD_ACCESS <0 ? 70 : PRIMITIVE_FIELD_ACCESS;
 		MAXCACCESS = MAXCACCESS <0 ? 300 : MAXCACCESS;
-		ESCAPE_PROBABILITY   = ESCAPE_PROBABILITY <0 ? 7 : ESCAPE_PROBABILITY;
+		ESCAPE_PROBABILITY   = ESCAPE_PROBABILITY <0 ? 12 : ESCAPE_PROBABILITY;
 		ESPACE_TO_PARTNER   = ESPACE_TO_PARTNER <0 ? 90 : ESPACE_TO_PARTNER;
+
+
+		maxWeight = maxWeight <0.0 ? 25.0 : maxWeight;
+		 maxFrequency = maxFrequency <0 ? 25.0 : maxFrequency;
+		 constantValue = constantValue <0 ? 10.0 : constantValue;
+		 slop = slop <0? 0.5 : slop;
 
 		
 		fprintf(gDetLog, "TraceFileGenerator v-%d.0\n", VERSION);

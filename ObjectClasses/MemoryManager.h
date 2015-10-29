@@ -45,6 +45,7 @@ public:
 	void addObjectToRootset(Object* newObject, int threadNumber);
 	void deleteEndFromRootset(int threadNumber);
 	void deleteFromRootset(int threadNumber, int rootSlotNumber);
+	void deleteFromRootset(int threadNumber);
 	bool isObjectInRoot(int thread, Object* obj);
 	int getARandomObjectID();
 	int getARandomObjectID(int thread);

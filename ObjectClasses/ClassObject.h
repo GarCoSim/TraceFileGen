@@ -36,6 +36,9 @@ public:
 	int primitiveType(int primIndex);
 	void setReference(int Index, Object* obj);
 	int getReferenceSlot();
+	inline void setWeight(double x){weight=x;}
+	inline double getWeight(){ return weight;}
+	
 private:
 	int myId;
 	string myName;
@@ -45,6 +48,7 @@ private:
 	int countFieldType[3]; 
 	int acc;
 	vector<Object*> refContainer;
+	double weight;
 };
 }
 #endif /* CLASSOBJECT_H_ */

@@ -56,7 +56,7 @@
  * */
 //#define ALLOCATION 70
 /* The ratio of how often allocation ( (a+) & (a + w - ) ) are performed */
-#define RATIO_ALLOCATION 70
+#define RATIO_ALLOCATION 50 // 50 ->70
 
 //#define REFERENCE 40
 

@@ -13,6 +13,9 @@
 #include <string.h>
 #include <time.h>
 
+#include <math.h>       /* log */
+
+
 using namespace std;
 
 extern int NUM_THREADS ;
@@ -30,7 +33,9 @@ extern int ESCAPE_PROBABILITY;
 extern int ESPACE_TO_PARTNER;
 
 
-
+extern double maxWeight;
+extern int constantValue;
+extern double slop;
 
 
 namespace traceGen {
@@ -360,6 +365,21 @@ bool Simulator::allocationRandomObjectAARD(int thread){
 	int primitiveField = (rand() % MAX_PRIMITIVES) +1;
 	int rootsetSize = memManager->getRootsetSize(thread);
 	Object* newObject;
+	ClassObject* clsObj;
+
+
+	int clsIndex;
+	double weight = maxWeight*( 1.0*rand()/RAND_MAX);
+	//double wieght = 40*( pow(.5, rnd) );
+	clsIndex = (int)( logb(weight)-logb(constantValue) -1 )/(logb(slop)); // 40, 20, 10, 
+	//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+	clsObj = memManager->getClassObject(clsIndex);
+	int cnt = 0;
+
+
+
+
+/*
 
 	//3.0
 	// select an entry from class table;
@@ -375,6 +395,10 @@ bool Simulator::allocationRandomObjectAARD(int thread){
 			break;
 		}
 	}
+
+*/
+
+
 
 	clsObj->increaseAccess();
 	// allocate an object
@@ -722,6 +746,7 @@ bool Simulator::readReferenceFromObject(int thread){
 }
 
 bool Simulator::deleteReferenceFromRootset(int thread){
+	/*
 	int rootSetSize = memManager->getRootsetSize(thread);
 	int rootSlotNumber;
 
@@ -735,6 +760,16 @@ bool Simulator::deleteReferenceFromRootset(int thread){
 	//printf("Obj id: %d\n", obj->getID());
 	memManager->deleteFromRootset(thread, rootSlotNumber);
 	log->deletefromRoot(thread, obj->getID());
+	*/
+	int rootSetSize = memManager->getRootsetSize(thread);
+	if(rootSetSize<=0){
+		return false;
+	}
+	int rootSlotNumber = rootSetSize-1;
+	Object* obj = memManager->getRoot(thread, rootSlotNumber);
+	memManager->deleteFromRootset(thread);
+	log->deletefromRoot(thread, obj->getID());
+
 	currentStep--;
 	return true;
 }

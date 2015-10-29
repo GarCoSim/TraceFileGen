@@ -1,15 +1,5 @@
 # TraceFileGen
 
-After extracting or cloning TraceFileGen perform the following steps:
-
-
-* mkdir build 
-* cd build    
-* cmake ..     
-* make        
-
-# TraceFileGen
-
 # Obtaining TraceFileGen
 TraceFileGen can be downloaded from https://github.com/GarCoSim/TraceFileGen
 

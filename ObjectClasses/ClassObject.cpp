@@ -46,6 +46,8 @@ ClassObject::ClassObject(int classId, string clsName, int staticReference) {
 	countFieldType[2] = nPrimitives - (countFieldType[0]+countFieldType[1]);  // for long 64
 	mySize = 16 + countFieldType[0]*1 + countFieldType[1]*4 + countFieldType[2]*8 + pointerSize*8;
 	acc = 0;
+
+	weight =0.0;
 }
 int ClassObject::getFieldOffset(int index, int fieldType){
 	if(fieldType == 3){

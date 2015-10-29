@@ -12,6 +12,11 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <stdio.h>      /* printf */
+#include <iomanip>
+#include <cmath>
+ 
 #include "ClassObject.h"
 #include "MemoryManager.h"
 //#include "../Utils/configReader.h"
@@ -164,6 +169,14 @@ void MemoryManager::deleteFromRootset(int threadNumber, int rootSlotNumber){
 	//}
 	//rootset[threadNumber][rootSlotNumber] = NULL;//.erase(rootset[threadNumber].begin()+rootSlotNumber);
 }
+
+
+void MemoryManager::deleteFromRootset(int threadNumber){
+	int deleteIndex = rootset[threadNumber].size()-1;
+	rootset[threadNumber].erase(rootset[threadNumber].begin()+deleteIndex);
+}
+
+
 
 int MemoryManager::getListSlot(){
 	unsigned int i;
@@ -322,6 +335,10 @@ void MemoryManager::buildClassTable(int nClass){
 		string str = "kdm"+ss.str();
 		int statRefField = rand()% MAX_POINTERS;
 		ClassObject* clsObj = new ClassObject (i+1, str, statRefField);
+		
+		double wieght = 40*( pow(.5, i+1) );
+		clsObj->setWeight(wieght);
+
 		classList[i] = clsObj;
 	}
 }
