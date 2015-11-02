@@ -14,7 +14,10 @@
 
 
 namespace traceGen {
-
+/*! A class that is used 
+ * to select threads and memory management operations
+ * for generating trace files  
+ */
 class Simulator {
 public:
 	Simulator(char* tracepath);

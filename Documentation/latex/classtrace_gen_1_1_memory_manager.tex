@@ -1,0 +1,102 @@
+\hypertarget{classtrace_gen_1_1_memory_manager}{}\section{trace\+Gen\+:\+:Memory\+Manager Class Reference}
+\label{classtrace_gen_1_1_memory_manager}\index{trace\+Gen\+::\+Memory\+Manager@{trace\+Gen\+::\+Memory\+Manager}}
+
+
+{\ttfamily \#include $<$Memory\+Manager.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a7dbf10e8206d58e565b5fd83992ce1dc}{}int {\bfseries allocate\+Object\+To\+Rootset} (int size, int thread\+Number, int root\+Set\+Number, int max\+Pointers, int creation\+Date)\label{classtrace_gen_1_1_memory_manager_a7dbf10e8206d58e565b5fd83992ce1dc}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a0e0414c23479e2b9829277efbd0bb9e8}{}int {\bfseries allocate\+Object} (int size, int max\+Pointers, \hyperlink{classtrace_gen_1_1_object}{Object} $\ast$creator\+Object, int pointer\+Index, int creation\+Date)\label{classtrace_gen_1_1_memory_manager_a0e0414c23479e2b9829277efbd0bb9e8}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_ad3e6a83fe2c60aaab9a07a60d1111525}{}\hyperlink{classtrace_gen_1_1_object}{Object} $\ast$ {\bfseries allocate\+Object\+New} (int thread\+Number, int max\+Pointers, int creation\+Date, int class\+I\+D, int prim\+Field)\label{classtrace_gen_1_1_memory_manager_ad3e6a83fe2c60aaab9a07a60d1111525}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_aa0745732170782e1d216a8a01832d853}{}int {\bfseries set\+Pointer} (\hyperlink{classtrace_gen_1_1_object}{Object} $\ast$start\+Object, int pointer\+Index, \hyperlink{classtrace_gen_1_1_object}{Object} $\ast$target\+Object)\label{classtrace_gen_1_1_memory_manager_aa0745732170782e1d216a8a01832d853}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a2224a0bf262c711a1c19da338ab7a6cc}{}int {\bfseries set\+Root\+Pointer} (int thread\+Number, int root\+Set\+Number, \hyperlink{classtrace_gen_1_1_object}{Object} $\ast$new\+Object)\label{classtrace_gen_1_1_memory_manager_a2224a0bf262c711a1c19da338ab7a6cc}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a5941aaa7ca195873247f22aa57de9961}{}int {\bfseries set\+Root\+Pointer} (int thread\+Number, \hyperlink{classtrace_gen_1_1_object}{Object} $\ast$new\+Object)\label{classtrace_gen_1_1_memory_manager_a5941aaa7ca195873247f22aa57de9961}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a07bb0660c38459d6763bb3d8cf11b362}{}int {\bfseries delete\+Pointer} (\hyperlink{classtrace_gen_1_1_object}{Object} $\ast$start\+Object, int pointer\+Number)\label{classtrace_gen_1_1_memory_manager_a07bb0660c38459d6763bb3d8cf11b362}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a60b55fff969a80b439f4adf7bb1fe8ae}{}bool {\bfseries add\+Ex\+Object\+To\+Rootset} (\hyperlink{classtrace_gen_1_1_object}{Object} $\ast$obj, int thread\+Number)\label{classtrace_gen_1_1_memory_manager_a60b55fff969a80b439f4adf7bb1fe8ae}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a9ce81944f1d28b8bccb0fafca69b66f6}{}void {\bfseries delete\+Root} (int thread, int root)\label{classtrace_gen_1_1_memory_manager_a9ce81944f1d28b8bccb0fafca69b66f6}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a1e373c7242908e0810e4a75c45987852}{}\hyperlink{classtrace_gen_1_1_object}{Object} $\ast$ {\bfseries get\+Root} (int thread\+Number, int root\+Slot\+Number)\label{classtrace_gen_1_1_memory_manager_a1e373c7242908e0810e4a75c45987852}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_aa924535d1ca49e2f08a0e533c9002e72}{}\hyperlink{classtrace_gen_1_1_object}{Object} $\ast$ {\bfseries get\+Object\+By\+I\+D} (int id)\label{classtrace_gen_1_1_memory_manager_aa924535d1ca49e2f08a0e533c9002e72}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_ade49b58f60038f85fad117d0c0099e10}{}int {\bfseries is\+Root} (int thread, \hyperlink{classtrace_gen_1_1_object}{Object} $\ast$obj)\label{classtrace_gen_1_1_memory_manager_ade49b58f60038f85fad117d0c0099e10}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_af35062ff00c818952d42e46ac876b558}{}int {\bfseries get\+Rootset\+Number\+By\+Reference} (int thread, \hyperlink{classtrace_gen_1_1_object}{Object} $\ast$obj)\label{classtrace_gen_1_1_memory_manager_af35062ff00c818952d42e46ac876b558}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a94f39a1dcf733d2d8d3a69931a9d685b}{}void {\bfseries visualize\+State} ()\label{classtrace_gen_1_1_memory_manager_a94f39a1dcf733d2d8d3a69931a9d685b}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a7133b454499a7bea6453efd5b14fb2b0}{}void {\bfseries setup\+Objects} ()\label{classtrace_gen_1_1_memory_manager_a7133b454499a7bea6453efd5b14fb2b0}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a344d7550615dec19d32302a5e73d3697}{}void {\bfseries request\+Promotion} (\hyperlink{classtrace_gen_1_1_object}{Object} $\ast$object)\label{classtrace_gen_1_1_memory_manager_a344d7550615dec19d32302a5e73d3697}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a28725c2835c1d5524a71ca2d95e8bd26}{}void {\bfseries request\+Deletion} (\hyperlink{classtrace_gen_1_1_object}{Object} $\ast$object)\label{classtrace_gen_1_1_memory_manager_a28725c2835c1d5524a71ca2d95e8bd26}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_adb54f8436e9b7e76316adba47f50690c}{}int {\bfseries get\+Rootset\+Size} (int thread\+Number)\label{classtrace_gen_1_1_memory_manager_adb54f8436e9b7e76316adba47f50690c}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a02e8b84d48359226f6c669b6f8d104b3}{}void {\bfseries add\+Object\+To\+Rootset} (\hyperlink{classtrace_gen_1_1_object}{Object} $\ast$new\+Object, int thread\+Number)\label{classtrace_gen_1_1_memory_manager_a02e8b84d48359226f6c669b6f8d104b3}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_ae4bb523090cc3bbb3b89767b1fb3c865}{}void {\bfseries delete\+End\+From\+Rootset} (int thread\+Number)\label{classtrace_gen_1_1_memory_manager_ae4bb523090cc3bbb3b89767b1fb3c865}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_af7a816f6d5f15b44ec7179229d081f3c}{}void {\bfseries delete\+From\+Rootset} (int thread\+Number, int root\+Slot\+Number)\label{classtrace_gen_1_1_memory_manager_af7a816f6d5f15b44ec7179229d081f3c}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_ad4c8bfeac320f1f1f7dc29139b47c485}{}void {\bfseries delete\+From\+Rootset} (int thread\+Number)\label{classtrace_gen_1_1_memory_manager_ad4c8bfeac320f1f1f7dc29139b47c485}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_ae096928d0f0042ed5a44a7540dd36914}{}bool {\bfseries is\+Object\+In\+Root} (int thread, \hyperlink{classtrace_gen_1_1_object}{Object} $\ast$obj)\label{classtrace_gen_1_1_memory_manager_ae096928d0f0042ed5a44a7540dd36914}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a8ec4d8aebc6678927dcabe19b6158449}{}int {\bfseries get\+A\+Random\+Object\+I\+D} ()\label{classtrace_gen_1_1_memory_manager_a8ec4d8aebc6678927dcabe19b6158449}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a12c8c473bbe62e7c7b0f373c6c698094}{}int {\bfseries get\+A\+Random\+Object\+I\+D} (int thread)\label{classtrace_gen_1_1_memory_manager_a12c8c473bbe62e7c7b0f373c6c698094}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a5626579f1a635a2d30fb37a326fed067}{}void {\bfseries build\+Class\+Table} (int n\+Class)\label{classtrace_gen_1_1_memory_manager_a5626579f1a635a2d30fb37a326fed067}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a883654698c0b72656d0f2867c92bd8eb}{}void {\bfseries print\+Class\+Table} (char $\ast$classfilename)\label{classtrace_gen_1_1_memory_manager_a883654698c0b72656d0f2867c92bd8eb}
+
+\item 
+\hypertarget{classtrace_gen_1_1_memory_manager_a9c6924afe951101032f835befbdd6178}{}\hyperlink{classtrace_gen_1_1_class_object}{Class\+Object} $\ast$ {\bfseries get\+Class\+Object} (int cls\+Index)\label{classtrace_gen_1_1_memory_manager_a9c6924afe951101032f835befbdd6178}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A class that is used to hold and manipulate the connectivity of objects themselves and threads 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Object\+Classes/Memory\+Manager.\+h\item 
+Object\+Classes/Memory\+Manager.\+cpp\end{DoxyCompactItemize}

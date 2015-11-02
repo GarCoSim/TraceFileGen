@@ -15,6 +15,10 @@
 using std::vector;
 namespace traceGen {
 
+/*! A class that is used 
+ * to hold and manipulate the connectivity 
+ * of objects themselves and threads	
+ */
 class MemoryManager {
 public:
 	MemoryManager();

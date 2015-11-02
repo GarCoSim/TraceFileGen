@@ -20,6 +20,10 @@ using namespace std;
 
 namespace traceGen {
 
+/*! A class of class object that is 
+ * used to hold the class inforamtion 
+ * of an object that is allocated.
+ */
 class ClassObject {
 public:
 	ClassObject(int classId, string clsName, int staticReference);

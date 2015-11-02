@@ -45,7 +45,7 @@ Object::Object(int id, int maxPointers, int dateOfCreation, int classId, int pri
 	myPointersMax = maxPointers;
 	pointers.resize(maxPointers);
 	visited = 0;
-	creationDate = dateOfCreation;
+	creationDate = dateOfCreation;		
 	myClassId = classId;
 	nPrimitives = primField;
 	vecPrim[0] = (rand()% nPrimitives); // for char 8
@@ -165,7 +165,7 @@ int Object::primitiveType(int primIndex){
 			return 1;
 		}
 	}
-	if(vecPrim[1] != 0){
+	if(vecPrim[2] != 0){
 		if ((int)(primIndex / (vecPrim[0]+ vecPrim[1] + vecPrim[2]) ) == 0){
 			return 2;
 		}

@@ -11,7 +11,10 @@
 namespace traceGen {
 
 
-
+/*! A class that is used
+ * 	to write memory management operations
+ *  into a file --- called trace file
+ */
 class Logger {
 public:
 	Logger(char* tracepath);
