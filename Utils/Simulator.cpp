@@ -107,7 +107,7 @@ void Simulator::allocateRandomObject(int thread){
 	int size = (rand() % (MAX_PAYLOAD - MIN_PAYLOAD)) + MIN_PAYLOAD;
 	int outGoingRefsMax = (rand() % MAX_POINTERS) + 1;
 
-	memManager->setupObjects();
+	memManager->markObjects();
 
 	Object* parent;
 	Object* child;
@@ -237,29 +237,6 @@ void Simulator::referenceOperation(int thread){
 		memManager->setPointer(parent,sloNumber,child);
 		log->logRefOperation(thread,parent->getID(),sloNumber,child->getID());
 	}
-}
-
-int Simulator::test(){
-//	memManager->allocateObjectToRootset(12,0,0,3);
-//
-//	int id = memManager->allocateObjectToRootset(11,0,3,2);
-//
-//	int id2 =memManager->allocateObject(10,2,memManager->getObjectByID(id),0);
-//
-//	if(memManager->getObjectByID(id2)->getReferenceTo(0)){
-//		int k;
-//		k=0;
-//		k++;
-//	}
-//	if(memManager->getObjectByID(id2)->getReferenceTo(1)){
-//		int l;
-//		l=0;
-//		l++;
-//	}
-//
-//
-//	memManager->allocateObject(10,2,memManager->getObjectByID(id),1);
-	return 0;
 }
 
 
@@ -517,7 +494,7 @@ bool Simulator::addReferenceToRootset(int thread){
 		return false;
 	}
 	
-	if( !memManager->addExObjectToRootset(object, targetThread)){
+	if( !memManager->addObjectRefToRootset(object, targetThread)){
 		log->addToRoot(targetThread, object->getID());
 		currentStep--;
 	}

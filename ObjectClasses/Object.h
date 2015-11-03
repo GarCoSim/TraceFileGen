@@ -5,18 +5,21 @@
  * 
  * \brief 
  *
- * This class is for manipulating an object.
+ * This class is used to manipulate an object.
  * 
- * \author Mazder $Author: kons $
+ * \author Mazder
  * 
- * \version $Revision: 3.2 $  
+ * \version 3.0  
  * 
- * \date $Date: 2015/10/30 $
+ * \date  2015/03/04
  * 
- * Contact: cas, IBM
- * 
+ * Origin:
+ *
+ * \author Kons
+ *
  * Created on: Jul 30, 2013
  * 
+ * Contact: cas, IBM
  */
 
 #ifndef OBJECT_H_
@@ -39,6 +42,7 @@ public:
 	///constructor overloading
 	Object(int id, int maxPointers, int dateOfCreation, int classId, int primField);
 	
+	/// Destructor
 	virtual ~Object();
 	
 	/// This methods returns the object's id
@@ -97,19 +101,15 @@ public:
 	/// A variable to mark the object
 	int visited;
 
-	/** A variable to contain the trace line
-	 * number when the object is allocated
-	 */
+	/// A variable to contain the trace line number when the object is allocated
 	int creationDate;
 
-	/** This array contains the number of  
-	  * primitives fields of different primitives
-	  */
+	/// This array contains the number of primitives fields of different primitives
 	int vecPrim[3];
 
 private:
 	/// thread id
-	int myTid;
+	int myTid; 
 
 	/// object id
 	int myId;

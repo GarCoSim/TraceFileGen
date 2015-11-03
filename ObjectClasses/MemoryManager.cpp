@@ -245,7 +245,7 @@ void MemoryManager::visualizeState(){
 
 }
 
-void MemoryManager::setupObjects(){
+void MemoryManager::markObjects(){
 	int i;
 	Object* temp;
 	for(i = 0 ; (unsigned int)i < objectList.size() ; i++){
@@ -271,7 +271,7 @@ void MemoryManager::addObjectToRootset(Object* newObject, int threadNumber){
 	setRootPointer(threadNumber, newObject);
 }
 
-bool MemoryManager::addExObjectToRootset(Object* obj, int threadNumber){
+bool MemoryManager::addObjectRefToRootset(Object* obj, int threadNumber){
 	for(int i=0; i<(int)rootset[threadNumber].size(); i++){
 		if( (rootset[threadNumber].at(i) ) && (rootset[threadNumber].at(i) == obj) ){
 			printf("Object is already in root set\n");

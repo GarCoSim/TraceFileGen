@@ -1,8 +1,25 @@
-/*
+/**
+ * \class Simulator
+ * 
  * Simulator.h
+ * 
+ * \brief 
  *
- *  Created on: 2013-08-14
- *      Author: kons
+ * This class is used to iterate for all MM operations by selecting threads and memory management operations  
+ * 
+ * \author Mazder
+ * 
+ * \version 3.0  
+ * 
+ * \date  2015/03/04
+ * 
+ * Origin:
+ *
+ * \author Kons
+ *
+ * Created on: 2013/08/14
+ * 
+ * Contact: cas, IBM
  */
 
 #ifndef SIMULATOR_H_
@@ -20,13 +37,24 @@ namespace traceGen {
  */
 class Simulator {
 public:
+	/// Constructor
 	Simulator(char* tracepath);
+
+	/// Destructor
 	virtual ~Simulator();
-	/* for version 0 */
+
+	/** This method is used to generate trace files
+	  * for version 0.0
+	  */ 
 	int run(int simulationSteps);
-	int test();
-	/* for version 3 */
+	
+	/** This method is used to create all classes 
+	  * with attributes   
+	  */
 	void initializeClassTable(char* classfilename );
+	/** This method is used to generate trace files
+		for version 3.0
+	  */ 
 	int runTraceFileGenerator(int simulationSteps);
 
 private:
@@ -38,7 +66,7 @@ private:
 	int getPartnerThread(int thread);
 	void readObject(int thread); // 'r'
 	
-	/*possible operations for version 3*/
+	/*possible operations for version 3.0*/
 	bool allocationRandomObjectAARD(int thread);
 	bool addReferenceToRootset(int thread); // '+'
 	bool deleteReferenceFromRootset(int thread); // '-'
