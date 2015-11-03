@@ -38,7 +38,7 @@ Options:
 
   Arguments				| Short			 | Description
  ---------------------- | -------------- | -----------
- --iteration x  	    | -i x			 | x number as the number of threads (default: 10) 
+ --iteration x  	    | -i x			 | x number as the number of operations (default: 100) 
  --thread x			    | -t x			 | x number as the number of threads (default: 10) 
  --class x			    | -c x      	 | x number as the number of classes (default: 300) 
  --pointers x			| -p x 			 | x number as the maximum number of pointer fields in objects/static pointer fields in classes (default: 10) 
