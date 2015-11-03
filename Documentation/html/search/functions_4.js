@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['getaccesscount',['getAccessCount',['../classtrace_gen_1_1_class_object.html#aa5e045d9c92ca95b194790a7bad6e8e6',1,'traceGen::ClassObject']]],
+  ['getarandomobjectid',['getARandomObjectID',['../classtrace_gen_1_1_memory_manager.html#a76230a43b6cef8d701bfaf5807e06943',1,'traceGen::MemoryManager::getARandomObjectID()'],['../classtrace_gen_1_1_memory_manager.html#a6a980e261ddb23a2c3cf0122024f9081',1,'traceGen::MemoryManager::getARandomObjectID(int thread)']]],
+  ['getclassid',['getClassId',['../classtrace_gen_1_1_object.html#a87e49f9f545bf6c8f0244c5f3e7ed40d',1,'traceGen::Object']]],
+  ['getclassobject',['getClassObject',['../classtrace_gen_1_1_memory_manager.html#a9c6924afe951101032f835befbdd6178',1,'traceGen::MemoryManager']]],
+  ['getfieldoffset',['getFieldOffset',['../classtrace_gen_1_1_class_object.html#ad94eb725920c81a5c24ac4a694344789',1,'traceGen::ClassObject::getFieldOffset()'],['../classtrace_gen_1_1_object.html#a6a2d496880c9a755b85409bfa7433c9f',1,'traceGen::Object::getFieldOffset()']]],
+  ['getfieldsize',['getFieldSize',['../classtrace_gen_1_1_class_object.html#a5ee3dad8d2faa9870df5ee5f9d847c08',1,'traceGen::ClassObject::getFieldSize()'],['../classtrace_gen_1_1_object.html#a933d68e6c506875e3c7881c083686631',1,'traceGen::Object::getFieldSize()']]],
+  ['getid',['getID',['../classtrace_gen_1_1_object.html#a99a8389a22915067650a7f5fb9167c03',1,'traceGen::Object::getID()'],['../classtrace_gen_1_1_class_object.html#a643aa951059afe4858b7653e13a4704a',1,'traceGen::ClassObject::getId()']]],
+  ['getname',['getName',['../classtrace_gen_1_1_class_object.html#a4d0acdbf7e8065a0f59891da6e080ab4',1,'traceGen::ClassObject']]],
+  ['getnumofprimfield',['getNumOfPrimField',['../classtrace_gen_1_1_object.html#a5ec1d5b05f032a3be5ecc11a7e50a943',1,'traceGen::Object']]],
+  ['getnumprimitives',['getNumPrimitives',['../classtrace_gen_1_1_class_object.html#adc930ba11f7acadc1a7fcec456b1079f',1,'traceGen::ClassObject']]],
+  ['getobjectbyid',['getObjectByID',['../classtrace_gen_1_1_memory_manager.html#a26724f0434603237091ed8107ff40492',1,'traceGen::MemoryManager']]],
+  ['getpayloadsize',['getPayloadSize',['../classtrace_gen_1_1_object.html#a949827546864cff9dd90328f9efaafcc',1,'traceGen::Object']]],
+  ['getpointercount',['getPointerCount',['../classtrace_gen_1_1_object.html#a3446d46c58acdb776d255dfb5ace0326',1,'traceGen::Object']]],
+  ['getpointersmax',['getPointersMax',['../classtrace_gen_1_1_object.html#a701a65821b1fd68b3a72d13382f6abc5',1,'traceGen::Object']]],
+  ['getreferenceslot',['getReferenceSlot',['../classtrace_gen_1_1_class_object.html#a6b06a5692a1f1b61e17e5f85411727c3',1,'traceGen::ClassObject']]],
+  ['getreferenceto',['getReferenceTo',['../classtrace_gen_1_1_object.html#ad6ce1268a470e7f3b7b6dc81a9234f65',1,'traceGen::Object']]],
+  ['getroot',['getRoot',['../classtrace_gen_1_1_memory_manager.html#a5048d2d84970b636949c13f264ac8791',1,'traceGen::MemoryManager']]],
+  ['getrootsetnumberbyreference',['getRootsetNumberByReference',['../classtrace_gen_1_1_memory_manager.html#a2c0a331d0263ad02ffe094e8c2b233ec',1,'traceGen::MemoryManager']]],
+  ['getrootsetsize',['getRootsetSize',['../classtrace_gen_1_1_memory_manager.html#af58126becdff1623d3a3232740f51d67',1,'traceGen::MemoryManager']]],
+  ['getsize',['getSize',['../classtrace_gen_1_1_class_object.html#a104b2641d15fe8d18d80d7ce472e032c',1,'traceGen::ClassObject']]],
+  ['getstaticrefcount',['getStaticRefCount',['../classtrace_gen_1_1_class_object.html#a0077027c259085a66ca6e191b7c4e71f',1,'traceGen::ClassObject']]],
+  ['getthreadid',['getThreadID',['../classtrace_gen_1_1_object.html#a4eb076a3252704fb6a6b1d940ea8c0a7',1,'traceGen::Object']]],
+  ['getweight',['getWeight',['../classtrace_gen_1_1_class_object.html#aa4970d64056b748c4cd59b469dbed632',1,'traceGen::ClassObject']]]
+];
