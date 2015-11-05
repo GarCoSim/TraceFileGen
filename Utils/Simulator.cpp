@@ -338,6 +338,9 @@ int Simulator::runTraceFileGenerator(int simulationSteps){
 
 bool Simulator::allocationRandomObjectAARD(int thread){
 	
+
+	int percentageDone = (stepsToGo-currentStep)/(float)stepsToGo*100;
+
 	int outGoingRefsMax = (rand() % MAX_POINTERS) + 1;
 	int primitiveField = (rand() % MAX_PRIMITIVES) +1;
 	int rootsetSize = memManager->getRootsetSize(thread);
@@ -346,35 +349,208 @@ bool Simulator::allocationRandomObjectAARD(int thread){
 
 
 	int clsIndex;
-	double weight = maxWeight*( 1.0*rand()/RAND_MAX);
-	//double wieght = 40*( pow(.5, rnd) );
-	clsIndex = (int)( logb(weight)-logb(constantValue) -1 )/(logb(slop)); // 40, 20, 10, 
-	//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
-	clsObj = memManager->getClassObject(clsIndex);
 	int cnt = 0;
 
-
-
-
+// it is good
 /*
+	if(percentageDone<50){
 
-	//3.0
-	// select an entry from class table;
-	int clsIndex = rand()%NUM_CLAZZ;
-	ClassObject* clsObj = memManager->getClassObject(clsIndex);
-	// select class which has been acceessed (hit) less
-	int cnt = 0;
-	while(clsObj->getAccessCount()>MAXCACCESS){
-		cnt++;
-		clsIndex = rand()%NUM_CLAZZ;
+		double weight = maxWeight*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( logb(weight)-logb(constantValue) -1 )/(logb(slop)); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
 		clsObj = memManager->getClassObject(clsIndex);
-		if(cnt == 30){
-			break;
-		}
+	
+	}
+	else{
+
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight*slop ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
 	}
 
 */
+/*
+ It is also good
 
+	char a;
+
+	if(percentageDone<50){
+
+		double weight = maxWeight*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( logb(weight)-logb(constantValue) -1 )/(logb(slop)); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	
+	}
+	else if ( (percentageDone>=50) && (percentageDone<70) ){
+		//printf("50 done %d \n", percentageDone);
+		//scanf("%c", &a);
+
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight*slop ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+	else if ( (percentageDone>=70) && (percentageDone<95) ) {
+		//printf("70 done %d \n", percentageDone);
+		//scanf("%c", &a);
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight* (slop+.1) ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+	else{
+		//printf("90 done %d \n", percentageDone);
+		//scanf("%c", &a);
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int) (weight) ;//( logb(weight)-logb(constantValue) -1 )/(logb(slop)); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+
+ */
+
+  /*
+	This is very good
+
+	char a;
+
+	if(percentageDone<50){
+
+		double weight = maxWeight*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( logb(weight)-logb(constantValue) -1 )/(logb(slop)); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	
+	}
+	else if ( (percentageDone>=50) && (percentageDone<70) ){
+		//printf("50 done %d \n", percentageDone);
+		//scanf("%c", &a);
+
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight*slop ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+	else if ( (percentageDone>=70) && (percentageDone<95) ) {
+		//printf("70 done %d \n", percentageDone);
+		//scanf("%c", &a);
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight* (slop-.1) ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+	else{
+		//printf("90 done %d \n", percentageDone);
+		//scanf("%c", &a);
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int) (weight) ;//( logb(weight)-logb(constantValue) -1 )/(logb(slop)); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+	*/
+
+	// This is for choice of calss in object creation
+	// An expenontially decreasing function is used at 
+	// the begining.
+	/* This need to be clean up if necessary */
+
+	if(percentageDone<40){
+
+		double weight = maxWeight*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( logb(weight)-logb(constantValue) -1 )/(logb(slop)); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	
+	}
+	else if ( (percentageDone>=40) && (percentageDone<50) ){
+		//printf("50 done %d \n", percentageDone);
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight*slop ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+	else if ( (percentageDone>=50) && (percentageDone<60) ){
+		//printf("50 done %d \n", percentageDone);
+
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight* (slop+.1) ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+	
+	else if ( (percentageDone>=60) && (percentageDone<70) ) {
+		//printf("70 done %d \n", percentageDone);
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight* (slop -.2) ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+
+	else if ( (percentageDone>=70) && (percentageDone<80) ) {
+		//printf("70 done %d \n", percentageDone);
+		
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight* (slop-.1) ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+	else if ( (percentageDone>=80) && (percentageDone<98) ) {
+		//printf("70 done %d \n", percentageDone);
+		
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int)( weight* (slop-.4) ); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+
+	else{
+		//printf("90 done %d \n", percentageDone);
+		
+		double weight = NUM_CLAZZ*( 1.0*rand()/RAND_MAX);
+		//double wieght = 40*( pow(.5, rnd) );
+		clsIndex = (int) (weight) * (slop +.3)  ;//( logb(weight)-logb(constantValue) -1 )/(logb(slop)); // 40, 20, 10, 
+		//printf("W:: %.10lf Index::%d\n", weight, clsIndex);
+		clsObj = memManager->getClassObject(clsIndex);
+	}
+
+
+	/*
+	else{
+	
+		//3.0
+		// select an entry from class table;
+		clsIndex = rand()%NUM_CLAZZ;
+		clsObj = memManager->getClassObject(clsIndex);
+		// select class which has been acceessed (hit) less
+		//int cnt = 0;
+		while(clsObj->getAccessCount()>MAXCACCESS){
+			cnt++;
+			clsIndex = rand()%NUM_CLAZZ;
+			clsObj = memManager->getClassObject(clsIndex);
+			if(cnt == 30){
+				break;
+			}
+		}
+
+    }*/
 
 
 	clsObj->increaseAccess();
