@@ -1,5 +1,14 @@
 # TraceFileGen
 
+This work is under improvement, fine-tuning, and documentation.
+
+#Trace File
+ To be documented
+
+#Trace File Format and Specification
+ To be documented
+ 	
+
 # Obtaining TraceFileGen
 TraceFileGen can be downloaded from https://github.com/GarCoSim/TraceFileGen
 
@@ -18,48 +27,46 @@ TraceFileGen can be downloaded from https://github.com/GarCoSim/TraceFileGen
  Utils			| C++ header and sources
  Documentation	| documentation
    
-# Installation (Initial Building)
-  After downloading followed by extracting or cloning, do the followings
+# Installing (Initial Build)
+  After downloading, followed by extracting or cloning, do the following:
   * $ cd TraceFileGen
   * $ ./build.sh
 
 # Compiling (After Initial Build)
-  After intial building, do the followings
+  After initial build, do the following:
   * $ cmake ..
   * $ make
   
 # Running (targetGen - the executable in the build folder)
 Usage: At least one argument must be provided to run targetGen
-* The name of trace file to be generated ( such as traceFile)
+* The name of trace file to be generated (such as traceFile)
 
 Example: $./targetGen traceFile
 
 Options:
 
-  Arguments				| Short			 | Description
+  Argument				| Short			 | Description
  ---------------------- | -------------- | -----------
- --iteration x  	    | -i x			 | x number as the number of operations (default: 100) 
- --thread x			    | -t x			 | x number as the number of threads (default: 10) 
- --class x			    | -c x      	 | x number as the number of classes (default: 300) 
- --pointers x			| -p x 			 | x number as the maximum number of pointer fields in objects/static pointer fields in classes (default: 10) 
- --primitives x			| -pm x     	 | x number as the maximum number of primitive fields in objects/static primitive fields in classes (default: 6) 
- --allocation x			| -a x      	 | x percent as the allocation (default: 2) 
- --storeaccess x 		| -s x     		 | x percent as the store (default: 11) 
- --readaccess x			| -r x      	 | x percent as the read (default: 88) 
- --deleteroot x			| -d x      	 | x percent as the rootdelete (default: 10) 
- --static x				| -sf x     	 | x percent as the static field access (default: 30) 
- --prifaccess x			| -pfa x    	 | x percent as the primitive field access (default: 70) 
- --classaccess x		| -ca x    		 | x number as the maximum used a class to create objects (default: 300) 
- --escape x				| -e x      	 | x probability as the an object to be escaped (default: 12) 
- --esctopartner x		| -etp x  		 | x probability as an object to be escaped to partner thread (default: 90) 
- -- maxWeight x			| -maxW x   	 | x maximum weight of a class (default: 25) 
- -- maxFrequency x		| -maxF x    	 | x maximum frequency of a class in object allocation (default: 25) 
- --constantValue x		| -cvalue x 	 | x constant for a where {y = ab^x} (default: 10) 
- --slop x				| -slp x  		 | x tangent of a line value between 0 t0 1 (default: b=.5) 
-  
-# Output (After after running)
-	It will generate three files
+ --operations x  	    | -o x			 | x is an integer, number of total memory management operations to be created in a trace file (default: 100) 
+ --thread x			    | -t x			 | x is an integer, number of threads (default: 10) 
+ --class x			    | -c x      	 | x is an integer, number of classes (default: 300) 
+ --pointers x			| -p x 			 | x is an integer, maximum number of pointer fields in an object or static pointer fields in a class (default: 10) 
+ --primitives x			| -pm x     	 | x is an integer, maximum number of primitive fields in an object or static primitive fields in a class (default: 6) 
+ --allocation x			| -a x      	 | x is an integer, ratio of allocation in total MM operations (default: 2) 
+ --storeaccess x 		| -s x     		 | x is an integer, ratio of store operations in total MM operations (default: 11) 
+ --readaccess x			| -r x      	 | x is an integer, ratio of read operations in total MM operations (default: 88) 
+ --deleteroot x			| -d x      	 | x is an integer, ratio of root delete operations in total MM operations (default: 10) 
+ --static x				| -sf x     	 | x is an integer, ratio of static field access (store/read) from a class(default: 30) 
+ --prifaccess x			| -pfa x    	 | x is an integer, ratio of primitive field access (store/read) from either a object or a class  (default: 70) 
+ --escape x				| -e x      	 | x is an integer, ratio of an object being escaped (default: 12) 
+ --esctopartner x		| -etp x  		 | x is an integer, ratio of an object being escaped to partner thread (default: 90) 
+ 
+ Some more options are given in this application. How to use those will be written in documentation.   
+
+ # Output (After after running)
+	traceGen will generate three files
 	* *.trace --- containing a sequence of memory management operations 
 	* *.cls   --- containing a lists of classes
 	* *.log   --- containing statistical data
+	* where * is the name of the trace file specified on the command line (e.g., "traceFile") 
 	
