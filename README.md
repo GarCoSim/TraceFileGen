@@ -61,7 +61,9 @@ Options:
  --escape x				| -e x      	 | x is an integer, ratio of an object being escaped (default: 12) 
  --esctopartner x		| -etp x  		 | x is an integer, ratio of an object being escaped to partner thread (default: 90)
 
- # Output (After after running)
+ Some more options are given in this application
+	
+# Output (After after running)
 	traceGen will generate three files
 	* *.trace --- containing a sequence of memory management operations
 	* *.cls   --- containing a lists of classes
