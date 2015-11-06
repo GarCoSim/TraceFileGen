@@ -24,7 +24,7 @@ int MAX_POINTERS;
 int MAX_PRIMITIVES;	
 int STATIC_FIELD_ACCESS;
 int PRIMITIVE_FIELD_ACCESS;
-int MAXCACCESS;
+//int MAXCACCESS;
 int ESCAPE_PROBABILITY;
 int ESPACE_TO_PARTNER;
 
@@ -78,7 +78,7 @@ int setArgs(int argc, char *argv[], const char *option, const char *shortOption)
 	int i;
 	for (i = 1; i < argc; i++) {
 		if (!strcmp(argv[i], option) || !strcmp(argv[i], shortOption)) {
-			if (!strcmp(option, "--iterations") || !strcmp(shortOption, "-i")) {
+			if (!strcmp(option, "--operations") || !strcmp(shortOption, "-i")) {
 				return atoi(argv[i + 1]);
 			}
 			else if (!strcmp(option, "--thread") || !strcmp(shortOption, "-t")) {
@@ -174,7 +174,7 @@ int main(int argc, char *argv[]){
 						"  --deleteroot x, -d x      uses x percent as the rootdelete (default: 10)\n" \
 						"  --static x, -sf x         uses x percent as the static field access (default: 30)\n" \
 						"  --prifaccess x, -pfa x    uses x percent as the primitive field access (default: 70)\n" \
-						"  --classaccess x, -ca x    uses x number as the maximum used a cleass to create objects (default: 300)\n" \
+						//"  --classaccess x, -ca x    uses x number as the maximum used a cleass to create objects (default: 300)\n" \
 						"  --escape x, -e x          uses x probability as the an object to be escaped (default: 12)\n" \
 						"  --esctopartner x, -etp x  uses x probability as an object to be escaped to partner thread (default: 90)\n" \
 						"  -- maxWeight x, -maxW x   uses x maximum weight of a class (default: 25)\n" \
@@ -202,7 +202,7 @@ int main(int argc, char *argv[]){
 		strcat(logFile, ".log");
 		gDetLog = fopen(logFile,"w+");
 
-		 int ITERATIONS = setArgs(argc, argv, "--iteration",  "-i");
+		 int OPERATIONS = setArgs(argc, argv, "--operations",  "-i");
 		 NUM_THREADS      = setArgs(argc, argv, "--thread",  "-t");
 		 NUM_CLAZZ       = setArgs(argc, argv, "--class",  "-c");
 		 MAX_POINTERS = setArgs(argc, argv, "--pointers", "-p");
@@ -213,7 +213,7 @@ int main(int argc, char *argv[]){
 		 ROOT_DELETE_PROBABILITY 	= setArgs(argc, argv, "--deleteaccess",  "-d");
 		 STATIC_FIELD_ACCESS 	= setArgs(argc, argv, "--static",  "-sf");
 		 PRIMITIVE_FIELD_ACCESS 	= setArgs(argc, argv, "--primaccess",  "-pfa");
-		 MAXCACCESS 	= setArgs(argc, argv, "--classaccess",  "-ca");
+		 //MAXCACCESS 	= setArgs(argc, argv, "--classaccess",  "-ca");
 		 ESCAPE_PROBABILITY      = setArgs(argc, argv, "--escape",  "-e");
 		 ESPACE_TO_PARTNER      = setArgs(argc, argv, "--esctopartner",  "-etp");
 
@@ -227,7 +227,7 @@ int main(int argc, char *argv[]){
 
 
 		// set default values
-		ITERATIONS = ITERATIONS <0 ? 100 : ITERATIONS;
+		OPERATIONS = OPERATIONS <0 ? 100 : OPERATIONS;
 		NUM_THREADS   = NUM_THREADS <0 ? 10 : NUM_THREADS;
 		NUM_CLAZZ 	 = NUM_CLAZZ <0 ?  300 : NUM_CLAZZ;
 		MAX_POINTERS = MAX_POINTERS<0? 10 : MAX_POINTERS;
@@ -238,19 +238,19 @@ int main(int argc, char *argv[]){
 		ROOT_DELETE_PROBABILITY = ROOT_DELETE_PROBABILITY <0 ? 11 : ROOT_DELETE_PROBABILITY;
 		STATIC_FIELD_ACCESS = STATIC_FIELD_ACCESS <0 ? 30 : STATIC_FIELD_ACCESS;
 		PRIMITIVE_FIELD_ACCESS = PRIMITIVE_FIELD_ACCESS <0 ? 70 : PRIMITIVE_FIELD_ACCESS;
-		MAXCACCESS = MAXCACCESS <0 ? 300 : MAXCACCESS;
+		//MAXCACCESS = MAXCACCESS <0 ? 300 : MAXCACCESS;
 		ESCAPE_PROBABILITY   = ESCAPE_PROBABILITY <0 ? 12 : ESCAPE_PROBABILITY;
 		ESPACE_TO_PARTNER   = ESPACE_TO_PARTNER <0 ? 90 : ESPACE_TO_PARTNER;
 
 
 		maxWeight = maxWeight <0.0 ? 25.0 : maxWeight;
-		 maxFrequency = maxFrequency <0 ? 25.0 : maxFrequency;
-		 constantValue = constantValue <0 ? 10.0 : constantValue;
-		 slop = slop <0? 0.5 : slop;
+		maxFrequency = maxFrequency <0 ? 25.0 : maxFrequency;
+		constantValue = constantValue <0 ? 10.0 : constantValue;
+		slop = slop <0? 0.5 : slop;
 
 		
 		fprintf(gDetLog, "TraceFileGenerator v-%d.0\n", VERSION);
-		fprintf(gDetLog, "Number of iterations: %d\n", ITERATIONS);
+		fprintf(gDetLog, "Number of operations: %d\n", OPERATIONS);
 		fprintf(gDetLog, "Number of threads: %d\n", NUM_THREADS);
 		fprintf(gDetLog, "Number of classes: %d\n", NUM_CLAZZ);
 		fprintf(gDetLog, "Maximum reference fields in an object/static reference fileds in a class: %d\n",  MAX_POINTERS);
@@ -262,7 +262,7 @@ int main(int argc, char *argv[]){
 		fprintf(gDetLog, "Ratio of rootsetdeletion: %d\n", ROOT_DELETE_PROBABILITY);
 		fprintf(gDetLog, "Ratio of static field access: %d\n", STATIC_FIELD_ACCESS);
 		fprintf(gDetLog, "Ratio of primitive field access: %d\n", PRIMITIVE_FIELD_ACCESS);
-		fprintf(gDetLog, "Maximum used a class to create objects: %d\n", MAXCACCESS);
+		//fprintf(gDetLog, "Maximum used a class to create objects: %d\n", MAXCACCESS);
 		fprintf(gDetLog, "Probability of escaped object: %d\n", ESCAPE_PROBABILITY);
 		fprintf(gDetLog, "Probability of escaped to partner thread: %d\n", ESPACE_TO_PARTNER);
 
@@ -272,11 +272,11 @@ int main(int argc, char *argv[]){
 		Simulator* sim = new Simulator(filename);
 		if(VERSION == 0){
 			//printf(" Version 0 \n");
-			sim->run(ITERATIONS);
+			sim->run(OPERATIONS);
 		}else{
 			//printf("Version 3 \n");
 			sim->initializeClassTable(clsfilename);
-			sim->runTraceFileGenerator(ITERATIONS);
+			sim->runTraceFileGenerator(OPERATIONS);
 		}
 		fprintf(gDetLog, "#allocation: %d\n", na);
 		fprintf(gDetLog, "#addRoot: %d\n", ar);
