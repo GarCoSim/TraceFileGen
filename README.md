@@ -59,14 +59,11 @@ Options:
  --static x				| -sf x     	 | x is an integer, ratio of static field access (store/read) from a class(default: 30) 
  --prifaccess x			| -pfa x    	 | x is an integer, ratio of primitive field access (store/read) from either a object or a class  (default: 70) 
  --escape x				| -e x      	 | x is an integer, ratio of an object being escaped (default: 12) 
- --esctopartner x		| -etp x  		 | x is an integer, ratio of an object being escaped to partner thread (default: 90) 
- 
- Some more options are given in this application. How to use those will be written in documentation.   
+ --esctopartner x		| -etp x  		 | x is an integer, ratio of an object being escaped to partner thread (default: 90)
 
  # Output (After after running)
 	traceGen will generate three files
-	* *.trace --- containing a sequence of memory management operations 
+	* *.trace --- containing a sequence of memory management operations
 	* *.cls   --- containing a lists of classes
-	* *.log   --- containing statistical data
-	* where * is the name of the trace file specified on the command line (e.g., "traceFile") 
+	* *.log   --- containing statistical data, where * is the name of the trace file specified on the command line (e.g., "traceFile")
 	
