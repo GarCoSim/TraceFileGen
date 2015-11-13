@@ -30,7 +30,7 @@ using namespace std;
 namespace traceGen {
 
 /*! A class of class object that is 
- * used to hold the class inforamtion 
+ * used to hold the class information 
  * of an object that is allocated.
  */
 class ClassObject {
@@ -86,7 +86,7 @@ private:
 	/// Class id
 	int myId; 
 	/// Class name
-	string myName; //
+	string myName; 
 	/// Class size
 	int mySize;
 	/// No. of static reference fields

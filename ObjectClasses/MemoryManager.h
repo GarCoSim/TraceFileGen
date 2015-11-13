@@ -57,14 +57,14 @@ public:
 	  */
 	int allocateObject(int size, int maxPointers, Object* creatorObject, int pointerIndex, int creationDate);
 	
-	/** This method allocate an object, object size is determined 
+	/** This method allocates an object, object size is determined 
 	  *  dynamically, add object reference to the rootset of the thread,
 	  *  and add object reference to the object list
 	  *  return object reference  
 	  */
 	Object* allocateObjectNew(int threadNumber, int maxPointers,int creationDate, int classID, int primField);
 	
-	/** The method writes referece of targetObject into the pointer 
+	/** The method writes reference of targetObject into the pointer 
 	  *  slot of startObject
 	  */
 	int setPointer(Object* startObject, int pointerIndex, Object* targetObject);
@@ -74,7 +74,7 @@ public:
 	  */
 	int setRootPointer(int threadNumber, int rootSetNumber, Object* newObject);
 	
-	/** This overloading method write reference of an object  
+	/** This overloading method writes reference of an object  
 	  *  at top of the rootset of the thread
 	  */
 	int setRootPointer(int threadNumber, Object* newObject);
@@ -150,7 +150,7 @@ public:
 	  */
 	void deleteFromRootset(int threadNumber);
 	
-	/** This method return true if the object reference 
+	/** This method returns true if the object reference 
 	  *  is in the rootset of the thread
 	  */
 	bool isObjectInRoot(int thread, Object* obj);

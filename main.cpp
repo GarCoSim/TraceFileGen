@@ -168,10 +168,10 @@ int main(int argc, char *argv[]){
 						"  --class x, -c x           uses x number as the number of classes (default: 300)\n" \
 						"  --pointers x, -p x        uses x number as the maximum number of pointer fields in objects/static pointer fileds in classes (default: 10)\n" \
 						"  --primitives x, -pm x     uses x number as the maximum number of primitive fields in objects/static primitive fileds in classes (default: 6)\n" \
-						"  --allocation x, -a x      uses x percent as the allocation (default: 2)\n" \
-						"  --storeaccess x, -s x     uses x percent as the store (default: 11)\n" \
-						"  --readaccess x, -r x      uses x percent as the read (default: 88)\n" \
-						"  --deleteroot x, -d x      uses x percent as the rootdelete (default: 10)\n" \
+						"  --allocation x, -a x      uses x percent as the allocation (default: 1)\n" \
+						"  --storeaccess x, -s x     uses x percent as the store (default: 8)\n" \
+						"  --readaccess x, -r x      uses x percent as the read (default: 80)\n" \
+						"  --deleteroot x, -d x      uses x percent as the rootdelete (default: 11)\n" \
 						"  --static x, -sf x         uses x percent as the static field access (default: 30)\n" \
 						"  --prifaccess x, -pfa x    uses x percent as the primitive field access (default: 70)\n" \
 						//"  --classaccess x, -ca x    uses x number as the maximum used a cleass to create objects (default: 300)\n" \
@@ -232,9 +232,9 @@ int main(int argc, char *argv[]){
 		NUM_CLAZZ 	 = NUM_CLAZZ <0 ?  300 : NUM_CLAZZ;
 		MAX_POINTERS = MAX_POINTERS<0? 10 : MAX_POINTERS;
 		MAX_PRIMITIVES = MAX_PRIMITIVES<0? 6 : MAX_PRIMITIVES;
-		RATIO_ALLOC_SET = RATIO_ALLOC_SET <0 ? 2 : RATIO_ALLOC_SET;
+		RATIO_ALLOC_SET = RATIO_ALLOC_SET <0 ? 1 : RATIO_ALLOC_SET;
 		RATIO_READ_ACCESS = RATIO_READ_ACCESS < 0 ? 80-RATIO_ALLOC_SET : RATIO_READ_ACCESS;
-		RATIO_STORE_ACCESS = RATIO_STORE_ACCESS <0 ? 10 : RATIO_STORE_ACCESS;
+		RATIO_STORE_ACCESS = RATIO_STORE_ACCESS <0 ? 8 : RATIO_STORE_ACCESS;
 		ROOT_DELETE_PROBABILITY = ROOT_DELETE_PROBABILITY <0 ? 11 : ROOT_DELETE_PROBABILITY;
 		STATIC_FIELD_ACCESS = STATIC_FIELD_ACCESS <0 ? 30 : STATIC_FIELD_ACCESS;
 		PRIMITIVE_FIELD_ACCESS = PRIMITIVE_FIELD_ACCESS <0 ? 70 : PRIMITIVE_FIELD_ACCESS;
@@ -290,12 +290,14 @@ int main(int argc, char *argv[]){
 		fprintf(gDetLog, "#readPrimfromObject: %d\n", rPo);
 		fprintf(gDetLog, "#readPrimfromClass: %d\n", rPc);
 		fprintf(gDetLog, "Total Number of Operations: %d\n", na+ar+dr+sRo+sRc+sPo+sPc+rRo+rRc+rPo+rPc);
-		fclose(gDetLog);
+		
 
 
 		gettimeofday(&tv, NULL);
 		time = ((1000000*tv.tv_sec+tv.tv_usec) - time_start)/1.0e6;
   		printf("Wallclock time: %f\n", time);
+		fprintf(gDetLog, "Total Generation Time: %.2f\n", time);
+		fclose(gDetLog);
 		
 	return 0;
 }

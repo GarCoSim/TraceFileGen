@@ -66,67 +66,67 @@ public:
 	  */
 	void logRefOperation(int thread, int parentID, int parentSlot, int childID, int fieldOffset, int fieldSize, int v);
 
-	/** This fucntion is used to view
+	/** This function is used to view
 	  * the status of object graph at the end.
 	  */ 
 	void logEnd();
 
-	/** This method writes inforamtion into 
+	/** This method writes information into 
 	  * the trace for deleting a reference from the thread root set
 	  * for given slot (version 0.0)
 	  */
 	void deleteRoot(int thread,int root);
 
-	/** This method writes inforamtion into 
+	/** This method writes information into 
 	  * the trace for deleting a reference of an object 
 	  * from the thread root set
 	  */
 	void deletefromRoot(int thread,int id);
 
-	/** This method writes inforamtion into 
-	  * the trace for reading fileds from an object (version 0.0)
+	/** This method writes information into 
+	  * the trace for reading fields from an object (version 0.0)
 	  */
 	void logReadOperation(int thread, int id);
 
-	/** This method writes detail inforamtion into 
+	/** This method writes detail information into 
 	  * the trace for writing reference of an object 
 	  * into another object  
 	  */
 	void logRefOperationClaasToObject(int thread, int classID, int slotOffset, int objId, int fieldSize, int v);
 
-	/** This method writes detail inforamtion into 
+	/** This method writes detail information into 
 	  * the trace for reading static reference of an object 
 	  * from the a class  
 	  */
 	void logreadRefFromClaas(int thread, int classID, int slotOffset, int fieldSize, int v);
 	
-	/** This method writes inforamtion into 
+	/** This method writes information into 
 	  * the trace for writing reference of an object 
 	  * into the rootset of the thread   
 	  */
 	void addToRoot(int thread,int id);
 
-	/** This method writes detail inforamtion into 
+	/** This method writes detail information into 
 	  * the trace for writing primitive filed of an object  
 	  */
 	void logstoreObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v );
 
-	/** This method writes detail inforamtion into 
+	/** This method writes detail information into 
 	  * the trace for writing static primitive filed of a class 
 	  */
 	void logstoreClassFieldWithPrimOperation(int thread, int classID, int fieldOffset, int fieldSize, int v );
 
-	/** This method writes detail inforamtion into 
+	/** This method writes detail information into 
 	  * the trace for reading static primitive filed of a class 
 	  */
 	void logreadClassFieldWithPrimOperation(int thread, int classID, int fieldOffset, int fieldSize, int v );
 
-	/** This method writes detail inforamtion into 
+	/** This method writes detail information into 
 	  * the trace for reading primitive filed of an object  
 	  */
 	void logreadObjFieldWithPrimOperation(int thread, int parentID, int fieldOffset, int fieldSize, int v );
 
-	/** This method writes detail inforamtion into 
+	/** This method writes detail information into 
 	  * the trace for reading reference of an object  
 	  */
 	void logreadRefFromObjectOperation(int thread, int parentID, int parentSlot, int fieldSize, int v);

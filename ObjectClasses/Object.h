@@ -68,7 +68,7 @@ public:
 	Object* getReferenceTo(int pointerNumber);
 	
 	/** This method writes the reference of 
-	  * the target object into the poniter slot of the object 
+	  * the target object into the pointer slot of the object 
 	  */
 	int setPointer(int pointerNumber, Object* target);
 
