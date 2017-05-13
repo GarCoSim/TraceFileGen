@@ -16,7 +16,7 @@ The goal of this project is to design and develop a program that can automatical
  MM Operations    											     | Notation	 | Usage
  --------------------------------------------------------------- | --------- | -----------
  Allocation 													 | a 		 | Ti Oj Sk Nl Cj
- Add a reference of an object to the rootset a threat  			 | +         | Ti Oj
+ Add a reference of an object to the rootset a thread  			 | +         | Ti Oj
  Store/write a primitive field into an object 					 | s         | Ti Oj Ix(/Fm) Sn Vo
  Store/write a static primitive field into a class object 		 | s         | Ti Cj Ix(/Fm) Sn Vo
  Store/write an object reference field into an object 			 | w         | Ti Pj \#k Ol Fm Sn Vo
