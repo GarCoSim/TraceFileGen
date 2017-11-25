@@ -29,7 +29,7 @@ Logger::Logger(char* tracepath) {
 	trace = fopen(tracepath, "w");
 
 	// dot file is not used, set null as default value
-	dot = '\0';
+	dot = nullptr;
 	//dot = fopen("gcKons.dot", "w");
 	//fprintf(dot,"digraph G {\n");
 }
